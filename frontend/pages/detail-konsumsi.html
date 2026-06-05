@@ -1,0 +1,63 @@
+<div class="page" id="page-detail-konsumsi" data-page="detail-konsumsi">
+  <div class="page-header">
+    <button class="back-btn" onclick="navigateTo('pilih-makanan')">←</button>
+    <h1>Detail Konsumsi</h1>
+  </div>
+
+  <div class="page-content">
+    <div class="card" style="text-align:center;padding:20px;">
+      <div style="font-size:48px;margin-bottom:8px;">🍚</div>
+      <h2 id="detailMakananNama" style="font-size:20px;font-weight:700;">Nasi Putih</h2>
+      <p style="font-size:13px;color:var(--text-light);margin-top:4px;"></p>
+      <div style="margin-top:12px;">
+        <label style="font-size:13px;font-weight:600;display:block;text-align:left;">Kalori (kal):</label>
+        <input class="form-input" id="detailKaloriInput" type="number" value="204" min="0" style="margin-top:4px;text-align:center;">
+      </div>
+    </div>
+
+    <div class="nutrisi-detail">
+      <div class="nutrisi-row">
+        <span class="lbl">Protein</span>
+        <span class="val">0g</span>
+      </div>
+      <div class="nutrisi-row">
+        <span class="lbl">Lemak</span>
+        <span class="val">0g</span>
+      </div>
+      <div class="nutrisi-row">
+        <span class="lbl">Karbohidrat</span>
+        <span class="val">0g</span>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;padding:16px;">
+      <button class="porsi-btn" onclick="ubahPorsi(-1)">−</button>
+      <input class="form-input" id="porsiInput" type="number" value="1" min="0.5" max="10" step="0.5" style="width:60px;text-align:center;font-size:18px;font-weight:700;">
+      <button class="porsi-btn" onclick="ubahPorsi(1)">+</button>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div class="section-header"><h2>Total Nutrisi:</h2></div>
+      <div class="nutrisi-detail">
+        <div class="nutrisi-row">
+          <span class="lbl">Kalori</span>
+          <span class="val orange" id="totalKalori">204 kal</span>
+        </div>
+        <div class="nutrisi-row">
+          <span class="lbl">Karbohidrat</span>
+          <span class="val" id="totalKarbohidrat">0g</span>
+        </div>
+        <div class="nutrisi-row">
+          <span class="lbl">Protein</span>
+          <span class="val" id="totalProtein">0g</span>
+        </div>
+        <div class="nutrisi-row">
+          <span class="lbl">Lemak</span>
+          <span class="val" id="totalLemak">0g</span>
+        </div>
+      </div>
+    </div>
+    <div id="detailKonsumsiError" class="alert alert-error" style="display:none"></div>
+    <button class="btn btn-primary" id="simpanKonsumsiBtn" onclick="simpanKonsumsi()" style="width:100%;">SIMPAN</button>
+  </div>
+</div>

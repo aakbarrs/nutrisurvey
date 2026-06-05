@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Rekomendasi - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .best-badge { background: var(--orange); color: var(--white); padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; display: inline-block; }
+    .benefit-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-light); padding: 4px 0; }
+    .benefit-item::before { content: '\2713'; color: var(--green); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="menu-rekomendasi">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('rekomendasi-menu')">&#8592;</button>
+      <h1>Menu Rekomendasi</h1>
+    </header>
+    <div class="page-content" id="menuRekomendasiContent">
+      <div class="rekomendasi-card">
+        <div class="rek-icon">&#127860;</div>
+        <div class="rek-title">Menu Dipilih Untuk Anda!</div>
+        <div class="rek-desc">Berdasarkan kalkulasi: 850 kal tersisa</div>
+      </div>
+
+      <div class="section-header">
+        <h2>Top 3 Pilihan Makan Siang:</h2>
+      </div>
+
+      <div class="card" style="border: 2px solid var(--orange);">
+        <div class="card-header">
+          <h3>&#127834; Nasi Goreng Sayur</h3>
+          <span class="best-badge">BEST MATCH</span>
+        </div>
+        <div class="nutrisi-detail" style="margin:0 0 12px;">
+          <div class="nutrisi-row"><span class="lbl">Kalori</span><span class="val orange">450</span></div>
+          <div class="nutrisi-row"><span class="lbl">Protein</span><span class="val">20g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Lemak</span><span class="val">10g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Karbohidrat</span><span class="val">62g</span></div>
+        </div>
+        <div class="benefit-item">Tinggi Protein dan rendah lemak</div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--blue);">
+        <div class="card-header"><h3>&#128031; Ikan Bakar + Nasi Merah</h3></div>
+        <div class="nutrisi-detail" style="margin:0 0 8px;">
+          <div class="nutrisi-row"><span class="lbl">Kalori</span><span class="val orange">420</span></div>
+          <div class="nutrisi-row"><span class="lbl">Protein</span><span class="val">30g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Lemak</span><span class="val">8g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Karbohidrat</span><span class="val">55g</span></div>
+        </div>
+        <span class="badge badge-blue">Alternatif Sehat</span>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--green);">
+        <div class="card-header"><h3>&#129368; Salad Ayam Panggang</h3></div>
+        <div class="nutrisi-detail" style="margin:0 0 8px;">
+          <div class="nutrisi-row"><span class="lbl">Kalori</span><span class="val orange">350</span></div>
+          <div class="nutrisi-row"><span class="lbl">Protein</span><span class="val">25g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Lemak</span><span class="val">12g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Karbohidrat</span><span class="val">20g</span></div>
+        </div>
+        <span class="badge badge-green">Low Calorie</span>
+      </div>
+
+      <button class="btn btn-primary" onclick="App.showToast('Pilihan dicatat!', 'success')">Catat Pilihan</button>
+      <div style="height:10px;"></div>
+      <button class="btn btn-secondary" onclick="App.navigate('rekomendasi-menu')">Lihat Lagi...</button>
+    </div>
+  </div>
+</body>
+</html>

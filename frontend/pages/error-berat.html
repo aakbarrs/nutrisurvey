@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error Berat - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .warning-icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--red); color: var(--white); font-size: 14px; font-weight: 700; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="error-berat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('catat-berat')">&#8592;</button>
+      <h1>Catat Berat Badan</h1>
+    </header>
+    <div class="page-content" id="errorBeratContent">
+      <div class="alert alert-error" style="padding:16px;">
+        <span class="alert-icon">&#9888;&#65039;</span>
+        <div>
+          <strong>Input Tidak Valid</strong><br>
+          <span style="font-size:13px;">Masukkan angka yang valid untuk berat badan</span>
+        </div>
+      </div>
+
+      <form id="errorBeratForm">
+        <div class="form-group">
+          <label>Tanggal</label>
+          <input class="form-input error" id="errBeratTgl" type="date">
+        </div>
+
+        <div class="form-group">
+          <label>Berat Badan (kg)</label>
+          <div style="position:relative;">
+            <input class="form-input error" id="errBeratInput" type="text" placeholder="Masukkan berat" value="abc">
+            <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--red);font-size:18px;">&#9888;&#65039;</span>
+          </div>
+          <div class="hint" style="color:var(--red);">Hanya angka yang diperbolehkan (contoh: 65)</div>
+        </div>
+
+        <div class="form-group">
+          <label>Catatan (opsional)</label>
+          <textarea class="form-textarea" id="errBeratCatatan" placeholder="Contoh: Setelah olahraga pagi"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" disabled style="opacity:0.5;">&#128190; SIMPAN</button>
+      </form>
+
+      <div class="card card-orange" style="margin-top:16px;">
+        <div class="card-header">
+          <div class="card-icon">&#128161;</div>
+          <h3>Tips</h3>
+        </div>
+        <div class="card-body">
+          Masukkan berat dalam angka numerik. Contoh: 65.5 atau 70
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tgl = document.getElementById('errBeratTgl');
+      if (tgl) tgl.value = new Date().toISOString().split('T')[0];
+    });
+  </script>
+</body>
+</html>

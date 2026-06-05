@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berhasil - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .success-check { width: 80px; height: 80px; border-radius: 50%; background: var(--green); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 16px; }
+    .chart-placeholder-sm { width: 100%; height: 80px; background: linear-gradient(180deg, rgba(76,175,80,0.08) 0%, rgba(76,175,80,0.02) 100%); border-radius: var(--radius-sm); display: flex; align-items: flex-end; padding: 8px; gap: 4px; }
+    .chart-placeholder-sm .bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--green); min-height: 4px; opacity: 0.5; }
+    .chart-placeholder-sm .bar:nth-child(1) { height: 50%; }
+    .chart-placeholder-sm .bar:nth-child(2) { height: 70%; }
+    .chart-placeholder-sm .bar:nth-child(3) { height: 60%; }
+    .chart-placeholder-sm .bar:nth-child(4) { height: 80%; }
+    .chart-placeholder-sm .bar:nth-child(5) { height: 65%; }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="sukses-berat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Pemantauan Berat Badan</h1>
+    </header>
+    <div class="page-content" id="suksesBeratContent">
+      <div class="success-page">
+        <div class="success-check">&#10003;</div>
+        <h2>Data Berhasil Disimpan!</h2>
+        <p>Berat badan: <strong>65 kg</strong> telah ditambahkan</p>
+      </div>
+
+      <div class="card card-blue weight-display" style="text-align:center;padding:16px;">
+        <div style="font-size:14px;color:var(--text-light);">Berat Badan Terkini:</div>
+        <div style="font-size:36px;font-weight:800;color:var(--blue);">65 kg</div>
+        <div style="font-size:12px;color:var(--text-muted);">28 November 2025</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>&#128200; Grafik Diperbarui</h3>
+        </div>
+        <div class="chart-placeholder-sm">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="App.navigate('catat-berat')">&#10133; TAMBAH LAGI</button>
+      <div style="height:10px;"></div>
+      <button class="btn btn-secondary" onclick="App.navigate('dashboard')">&#127968; KE DASHBOARD</button>
+    </div>
+  </div>
+</body>
+</html>

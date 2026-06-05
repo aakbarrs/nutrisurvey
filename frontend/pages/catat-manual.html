@@ -1,0 +1,42 @@
+<div class="page" id="page-catat-manual" data-page="catat-manual">
+  <div class="page-header">
+    <button class="back-btn" onclick="navigateTo('pilih-makanan')">←</button>
+    <h1>Catat Manual</h1>
+  </div>
+
+  <div class="page-content">
+    <div id="manualError" class="alert alert-error" style="display:none;">
+      <span class="alert-icon">⚠️</span>
+      <span>Semua field harus diisi</span>
+    </div>
+
+    <form id="catatManualForm">
+      <div class="form-group">
+        <label>Nama Makanan:</label>
+        <input type="text" class="form-input" id="manualNama" placeholder="Masukkan nama..." required />
+      </div>
+
+      <div class="form-group">
+        <label>Kalori (kal):</label>
+        <input type="number" class="form-input" id="manualKalori" placeholder="0" min="0" required />
+      </div>
+
+      <div class="form-group">
+        <label>Protein (g):</label>
+        <input type="number" class="form-input" id="manualProtein" placeholder="0" min="0" required />
+      </div>
+
+      <div class="form-group">
+        <label>Lemak (g):</label>
+        <input type="number" class="form-input" id="manualLemak" placeholder="0" min="0" required />
+      </div>
+
+      <div class="form-group">
+        <label>Karbohidrat (g):</label>
+        <input type="number" class="form-input" id="manualKarbohidrat" placeholder="0" min="0" required />
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="simpanManualBtn">Simpan</button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekomendasi Menu - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .tips-card { background: linear-gradient(135deg, #FFF8E1, #FFF3CD); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; border-left: 4px solid var(--yellow); }
+    .tips-card .tips-title { font-size: 14px; font-weight: 700; color: #F57F17; margin-bottom: 4px; }
+    .tips-card .tips-text { font-size: 13px; color: var(--text-light); }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="rekomendasi-menu">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Rekomendasi Menu</h1>
+    </header>
+    <div class="page-content" id="rekomendasiMenuContent">
+      <div class="tips-card">
+        <div class="tips-title">&#128161; Tips nutrisi Anda</div>
+        <div class="tips-text">Berdasarkan target 2000 kalori harian Anda, disarankan untuk mengonsumsi makanan tinggi serat dan protein untuk menjaga energi sepanjang hari. Pilih variasi menu dari setiap kategori untuk nutrisi seimbang.</div>
+      </div>
+
+      <div class="section-header"><h2>Menu untuk Makan Siang:</h2></div>
+
+      <div class="card" style="margin-bottom:16px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="font-size:32px;">&#127834;</div>
+          <div>
+            <div style="font-size:16px;font-weight:700;">Nasi Goreng Sayur</div>
+          </div>
+        </div>
+        <div class="nutrisi-detail" style="margin:0;">
+          <div class="nutrisi-row">
+            <span class="lbl">Kalori</span>
+            <span class="val">450</span>
+          </div>
+          <div class="nutrisi-row">
+            <span class="lbl">Protein</span>
+            <span class="val">18g</span>
+          </div>
+          <div class="nutrisi-row">
+            <span class="lbl">Lemak</span>
+            <span class="val">12g</span>
+          </div>
+          <div class="nutrisi-row">
+            <span class="lbl">Karbohidrat</span>
+            <span class="val">65g</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
+          <span class="badge badge-green">Tinggi serat</span>
+          <span class="badge badge-green">Rendah lemak</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+          <div style="font-size:32px;">&#128031;</div>
+          <div>
+            <div style="font-size:16px;font-weight:700;">Ikan Bakar + Sayur</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-blue">Tinggi protein</span>
+          <span class="badge badge-blue">Omega 3</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;padding:16px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <div style="text-align:center;padding:8px;background:var(--gray-50);border-radius:var(--radius-sm);">
+            <div style="font-size:20px;">&#129368;</div>
+            <div style="font-size:12px;font-weight:600;">Ayam Panggang Salad</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:var(--gray-50);border-radius:var(--radius-sm);">
+            <div style="font-size:20px;">&#127838;</div>
+            <div style="font-size:12px;font-weight:600;">Gado-Gado</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:var(--gray-50);border-radius:var(--radius-sm);">
+            <div style="font-size:20px;">&#128031;</div>
+            <div style="font-size:12px;font-weight:600;">Ikan Bakar + Sayur</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:var(--gray-50);border-radius:var(--radius-sm);">
+            <div style="font-size:20px;">&#127834;</div>
+            <div style="font-size:12px;font-weight:600;">Nasi Goreng Sayur</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-green">Low carb</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="App.navigate('rekomendasi')">BERIKAN REKOMENDASI</button>
+    </div>
+  </div>
+</body>
+</html>

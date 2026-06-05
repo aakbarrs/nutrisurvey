@@ -1,0 +1,29 @@
+<div class="page" id="page-verifikasi-email" data-page="verifikasi-email">
+  <div class="page-header">
+    <button class="back-btn" onclick="navigateTo('register')">←</button>
+    <h1>Verifikasi Email Anda</h1>
+  </div>
+
+  <div class="page-content" style="text-align:center;padding-top:60px;">
+    <div style="font-size:64px;margin-bottom:20px;">@</div>
+
+    <h2 style="font-size:22px;font-weight:700;margin-bottom:8px;">Cek Email Anda!</h2>
+
+    <p style="font-size:14px;color:var(--text-light);margin-bottom:24px;">
+      Kami telah mengirim link verifikasi ke <strong id="verifyEmailDisplay">user@example.com</strong>
+    </p>
+
+    <div class="alert alert-warning" style="text-align:left;">
+      <span class="alert-icon">ℹ️</span>
+      <span>Silakan periksa inbox atau folder spam email Anda jika link verifikasi belum ditemukan</span>
+    </div>
+
+    <button class="btn btn-primary" style="margin-top:24px;" onclick="openEmailApp()">
+      BUKA EMAIL
+    </button>
+
+    <p style="margin-top:20px;">
+      <a href="#" onclick="resendVerification()" style="font-size:14px;">Kirim Ulang Email</a>
+    </p>
+  </div>
+</div>

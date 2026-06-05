@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengaturan Notifikasi - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .jadwal-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--gray-100); font-size: 14px; }
+    .jadwal-item:last-child { border-bottom: none; }
+    .jadwal-item.inactive { color: var(--text-muted); }
+    .jadwal-item .ji-time { font-weight: 700; min-width: 48px; text-align: right; }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="pengaturan-notifikasi-1nonaktif">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('pengaturan-notifikasi')">&#8592;</button>
+      <h1>Pengaturan Notifikasi</h1>
+    </header>
+    <div class="page-content" id="pengaturanNotifikasi1NonaktifContent">
+      <div style="text-align:center;padding:32px 24px 16px;">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--orange-soft);display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 16px;">&#9888;&#65039;</div>
+        <h2 style="font-size:22px;font-weight:700;margin-bottom:8px;">Pengaturan Tersimpan</h2>
+        <p style="font-size:14px;color:var(--text-light);">Pengaturan berhasil, tetapi ada perubahan</p>
+      </div>
+
+      <div class="section-header">
+        <h2>&#128276; Pengingat Aktif</h2>
+      </div>
+
+      <div class="card">
+        <div class="jadwal-item inactive">
+          <span>&#10060; Sarapan: pengingat tidak aktif</span>
+          <span style="flex:1;"></span>
+        </div>
+        <div class="jadwal-item">
+          <span>&#127835; Makan Siang: 12:00</span>
+          <span style="flex:1;"></span>
+          <span class="ji-time" style="color:#F57F17;">Aktif</span>
+        </div>
+        <div class="jadwal-item" style="border-bottom:none;">
+          <span>&#127769; Makan Malam: 18:00</span>
+          <span style="flex:1;"></span>
+          <span class="ji-time" style="color:var(--blue);">Aktif</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="App.navigate('pengaturan-notifikasi')">OK, MENGERTI</button>
+    </div>
+  </div>
+</body>
+</html>

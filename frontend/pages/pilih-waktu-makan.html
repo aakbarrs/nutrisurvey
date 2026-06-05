@@ -1,0 +1,47 @@
+<div class="page" id="page-pilih-waktu" data-page="pilih-waktu">
+  <div class="page-header">
+    <button class="back-btn" onclick="navigateTo('dashboard')">←</button>
+    <h1>Pilih Waktu Makan</h1>
+  </div>
+
+  <div class="page-content">
+    <div id="waktuError" class="alert alert-error" style="display:none;">
+      <span class="alert-icon">⚠️</span>
+      <span>Silakan pilih waktu makan terlebih dahulu</span>
+    </div>
+
+    <div class="radio-group">
+      <label class="card" style="cursor:pointer;display:flex;align-items:center;gap:14px;" onclick="selectWaktu('sarapan')">
+        <input type="radio" name="waktu_makan" value="sarapan" class="waktu-radio" />
+        <span class="radio-indicator"></span>
+        <div>
+          <div style="font-size:24px;margin-bottom:4px;">🌅</div>
+          <div style="font-weight:600;">Sarapan</div>
+          <div style="font-size:13px;color:var(--text-light);">06.00 - 10.00</div>
+        </div>
+      </label>
+
+      <label class="card" style="cursor:pointer;display:flex;align-items:center;gap:14px;" onclick="selectWaktu('siang')">
+        <input type="radio" name="waktu_makan" value="siang" class="waktu-radio" />
+        <span class="radio-indicator"></span>
+        <div>
+          <div style="font-size:24px;margin-bottom:4px;">☀️</div>
+          <div style="font-weight:600;">Makan Siang</div>
+          <div style="font-size:13px;color:var(--text-light);">12.00 - 14.00</div>
+        </div>
+      </label>
+
+      <label class="card" style="cursor:pointer;display:flex;align-items:center;gap:14px;" onclick="selectWaktu('malam')">
+        <input type="radio" name="waktu_makan" value="malam" class="waktu-radio" />
+        <span class="radio-indicator"></span>
+        <div>
+          <div style="font-size:24px;margin-bottom:4px;">🌙</div>
+          <div style="font-weight:600;">Makan Malam</div>
+          <div style="font-size:13px;color:var(--text-light);">18.00 - 21.00</div>
+        </div>
+      </label>
+    </div>
+
+    <button class="btn btn-primary" style="margin-top:16px;" onclick="lanjutPilihMakanan()">LANJUT</button>
+  </div>
+</div>

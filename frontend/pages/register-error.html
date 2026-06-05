@@ -1,0 +1,34 @@
+<div class="page" id="page-register-error" data-page="register-error">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h2>NutriSurvey</h2>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab">Sign In</button>
+        <button class="auth-tab active">Sign Up</button>
+      </div>
+
+      <div class="alert alert-warning" style="display:flex;align-items:center;gap:8px;margin-top:12px;">
+        <span style="font-size:18px;">&#9888;&#65039;</span>
+        <span>
+          <strong>Email Sudah Digunakan</strong><br>
+          <span style="font-size:13px;">Email ini sudah terdaftar. Silakan login atau gunakan email lain</span>
+        </span>
+      </div>
+
+      <form class="auth-form">
+        <div class="form-group">
+          <label>Email:</label>
+          <input type="email" class="form-input" value="existing@email.com" style="border-color:var(--yellow);background:var(--yellow-soft);" required>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+          <button type="submit" class="btn btn-primary">LOGIN</button>
+          <button type="button" class="btn btn-outline">GANTI EMAIL</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

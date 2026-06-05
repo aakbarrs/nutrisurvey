@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#FF6B35">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>NutriSurvey</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    #loadingOverlay {
+      position: fixed; inset: 0; background: rgba(255,255,255,0.92);
+      display: none; align-items: center; justify-content: center;
+      z-index: 5000; flex-direction: column; gap: 12px;
+    }
+    #loadingOverlay.active { display: flex; }
+    #toastContainer {
+      position: fixed; bottom: calc(var(--bottom-nav-h) + 16px);
+      left: 50%; transform: translateX(-50%); z-index: 3000;
+      max-width: calc(100% - 32px); width: 100%; pointer-events: none;
+    }
+
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FF6B35"/>
+        <stop offset="100%" stop-color="#FF4D00"/>
+      </linearGradient>
+      <linearGradient id="greenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2ECC71"/>
+        <stop offset="100%" stop-color="#27AE60"/>
+      </linearGradient>
+      <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3498DB"/>
+        <stop offset="100%" stop-color="#2980B9"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time" id="statusTime">12:00</span>
+    <span class="icons">&#128247; &#9881;</span>
+  </div>
+
+  <!-- ==================== SPLASH SCREEN (P011) ==================== -->
+  <div class="page" data-page="splash" id="page-splash">
+    <div class="splash-page">
+      <div class="logo">&#127858;</div>
+      <h1>NutriSurvey</h1>
+      <p>Pantau Nutrisi, Hidup Lebih Sehat</p>
+      <button class="splash-btn primary" id="splashLogin">MASUK</button>
+      <button class="splash-btn secondary" id="splashRegister">DAFTAR</button>
+      <p style="font-size:11px;opacity:0.7;margin-top:40px;max-width:260px;text-align:center;">Dengan melanjutkan, Anda menyetujui Syarat &amp; Ketentuan</p>
+    </div>
+  </div>
+
+  <!-- ==================== SIGN IN / SIGN UP (P012) ==================== -->
+  <div class="page" data-page="login" id="page-login">
+    <div class="auth-page">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h2>NutriSurvey</h2>
+        </div>
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabSignin">Sign In</button>
+          <button class="auth-tab" id="tabSignup">Sign Up</button>
+        </div>
+        <div class="section-header" style="margin-top:12px;"><h3>Masuk ke Akun Anda</h3></div>
+        <form class="auth-form" id="loginForm">
+          <div class="form-group">
+            <label>Email:</label>
+            <input class="form-input" id="loginEmail" type="email" placeholder="user@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>Password:</label>
+            <div class="form-input-group">
+              <input class="form-input" id="loginPassword" type="password" placeholder="Masukkan password Anda" required>
+              <button type="button" class="input-action" onclick="Auth.togglePassword('loginPassword',this)">&#128065;</button>
+            </div>
+          </div>
+          <div style="text-align:right;margin-bottom:12px;">
+            <a href="#" onclick="return false;" style="font-size:13px;color:var(--text-light);">Lupa Password?</a>
+          </div>
+          <div id="loginError" class="alert alert-error" style="display:none"></div>
+          <button type="submit" class="btn btn-primary" id="loginBtn">MASUK</button>
+          <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
+            <div style="flex:1;height:1px;background:var(--gray-200);"></div>
+            <span style="font-size:13px;color:var(--text-light);">atau</span>
+            <div style="flex:1;height:1px;background:var(--gray-200);"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button type="button" class="btn btn-secondary" style="display:flex;align-items:center;justify-content:center;gap:8px;" onclick="App.showToast('Login Google belum tersedia','info')">Masuk dengan Google</button>
+            <button type="button" class="btn btn-secondary" style="display:flex;align-items:center;justify-content:center;gap:8px;" onclick="App.showToast('Login Facebook belum tersedia','info')">Masuk dengan Facebook</button>
+          </div>
+        </form>
+        <form class="auth-form hidden" id="registerForm">
+          <div class="section-header" style="margin-bottom:12px;"><h3>Buat Akun Baru</h3></div>
+          <div class="form-group">
+            <label>Nama Lengkap:</label>
+            <input class="form-input" id="regName" type="text" placeholder="Masukkan nama lengkap" required>
+          </div>
+          <div class="form-group">
+            <label>Email:</label>
+            <input class="form-input" id="regEmail" type="email" placeholder="nama@email.com" required>
+          </div>
+          <div class="form-group">
+            <label>Password:</label>
+            <div class="form-input-group">
+              <input class="form-input" id="regPassword" type="password" placeholder="Masukkan password Anda" required>
+              <button type="button" class="input-action" onclick="Auth.togglePassword('regPassword',this)">&#128065;</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Konfirmasi Password:</label>
+            <input class="form-input" id="regConfirmPassword" type="password" placeholder="Ketik ulang password" required>
+          </div>
+          <label class="check-item" style="margin-bottom:12px;">
+            <input type="checkbox" id="regTerms">
+            <span class="check-indicator"></span>
+            <span class="check-label" style="font-size:13px;">Saya menyetujui Syarat &amp; Ketentuan</span>
+          </label>
+          <p style="font-size:11px;color:var(--text-muted);margin-bottom:16px;">Informasi Anda akan dijaga sesuai dengan Kebijakan Privasi kami</p>
+          <div id="registerError" class="alert alert-error" style="display:none"></div>
+          <button type="submit" class="btn btn-primary" id="registerBtn">DAFTAR</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SIGN IN ERROR (P012a) ==================== -->
+  <div class="page" data-page="signin-error" id="page-signin-error">
+    <div class="auth-page">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h2>NutriSurvey</h2>
+        </div>
+        <div class="auth-tabs">
+          <button class="auth-tab active">Sign In</button>
+          <button class="auth-tab">Sign Up</button>
+        </div>
+        <div class="alert alert-error" style="display:flex;align-items:center;gap:8px;margin-top:12px;">
+          <span style="font-size:18px;">&#10007;</span>
+          <span><strong>Login Gagal</strong><br><span style="font-size:13px;">Email atau password salah</span></span>
+        </div>
+        <form class="auth-form">
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="email" class="form-input error" value="user@example.com" required>
+          </div>
+          <div class="form-group">
+            <label>Password:</label>
+            <div class="form-input-group">
+              <input type="password" class="form-input error" value="password123" required>
+              <button type="button" class="input-action">&#128065;</button>
+            </div>
+          </div>
+          <div style="text-align:right;margin-bottom:12px;">
+            <a href="#" onclick="return false;" style="font-size:13px;color:var(--text-light);">Lupa Password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary">COBA LAGI</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== REGISTER ERROR (P013a) ==================== -->
+  <div class="page" data-page="register-error" id="page-register-error">
+    <div class="auth-page">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h2>NutriSurvey</h2>
+        </div>
+        <div class="auth-tabs">
+          <button class="auth-tab">Sign In</button>
+          <button class="auth-tab active">Sign Up</button>
+        </div>
+        <div class="alert alert-warning" style="display:flex;align-items:center;gap:8px;margin-top:12px;">
+          <span style="font-size:18px;">&#9888;&#65039;</span>
+          <span><strong>Email Sudah Digunakan</strong><br><span style="font-size:13px;">Email ini sudah terdaftar. Silakan login atau gunakan email lain</span></span>
+        </div>
+        <form class="auth-form">
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="email" class="form-input" value="existing@email.com" style="border-color:var(--yellow);background:var(--yellow-soft);" required>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+            <button type="submit" class="btn btn-primary">LOGIN</button>
+            <button type="button" class="btn btn-outline">GANTI EMAIL</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VERIFIKASI EMAIL (P014) ==================== -->
+  <div class="page" data-page="verifikasi-email" id="page-verifikasi-email">
+    <div class="page-header">
+      <button class="back-btn" onclick="App.navigate('register')">&#8592;</button>
+      <h1>Verifikasi Email Anda</h1>
+    </div>
+    <div class="page-content" style="text-align:center;padding-top:60px;">
+      <div style="font-size:64px;margin-bottom:20px;">@</div>
+      <h2 style="font-size:22px;font-weight:700;margin-bottom:8px;">Cek Email Anda!</h2>
+      <p style="font-size:14px;color:var(--text-light);margin-bottom:24px;">
+        Kami telah mengirim link verifikasi ke <strong id="verifyEmailDisplay">user@example.com</strong>
+      </p>
+      <div class="alert alert-warning" style="text-align:left;">
+        <span class="alert-icon">&#8505;&#65039;</span>
+        <span>Silakan periksa inbox atau folder spam email Anda jika link verifikasi belum ditemukan</span>
+      </div>
+      <button class="btn btn-primary" style="margin-top:24px;" onclick="openEmailApp()">BUKA EMAIL</button>
+      <p style="margin-top:20px;"><a href="#" onclick="resendVerification()" style="font-size:14px;">Kirim Ulang Email</a></p>
+    </div>
+  </div>
+
+  <!-- ==================== SELAMAT DATANG (P015) ==================== -->
+  <div class="page" data-page="selamat-datang" id="page-selamat-datang">
+    <div class="page-header">
+      <button class="back-btn" onclick="App.navigate('verifikasi-email')">&#8592;</button>
+      <h1>Selamat Datang!</h1>
+    </div>
+    <div class="page-content" style="padding-top:60px;">
+      <div class="success-page">
+        <div class="success-icon" style="font-size:40px;">✓</div>
+        <h2>Email Terverifikasi!</h2>
+        <p>Silakan login untuk melanjutkan</p>
+        <form id="welcomeLoginForm" style="text-align:left;margin-top:24px;">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" class="form-input" id="welcomeEmail" value="" placeholder="@namaemailuser" required>
+          </div>
+          <div class="form-group">
+            <label>Password:</label>
+            <div class="form-input-group">
+              <input type="password" class="form-input" id="welcomePassword" placeholder="Masukkan password Anda" required>
+              <button type="button" class="input-action" onclick="Auth.togglePassword('welcomePassword',this)">&#128065;</button>
+            </div>
+          </div>
+          <label class="check-item" style="margin-bottom:16px;">
+            <input type="checkbox" id="welcomeRemember">
+            <span class="check-indicator"></span>
+            <span class="check-label" style="font-size:13px;">Ingat saya</span>
+          </label>
+          <button type="submit" class="btn btn-primary">MASUK</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DASHBOARD BELUM ADA DATA (P023) ==================== -->
+  <div class="page" data-page="dashboard" id="page-dashboard">
+    <header class="page-header">
+      <h1>Dashboard NutriSurvey</h1>
+      <button class="header-action" onclick="App.navigate('profil')">&#128100;</button>
+    </header>
+    <div class="page-content" id="dashboardContent">
+      <div class="card" style="text-align:center;padding:40px 20px;">
+        <div class="empty-state" style="padding:0;">
+          <div class="empty-icon">&#128202;</div>
+          <h3>Belum Ada Data Konsumsi</h3>
+          <p>Mulai catat makanan Anda untuk melihat ringkasan nutrisi harian di sini</p>
+          <button class="btn btn-primary" onclick="App.navigate('catat-makanan')">+ Catat Makanan Pertama</button>
+        </div>
+      </div>
+      <div class="card card-green" style="margin-top:16px;">
+        <div class="card-header"><h3>&#128161; Tips Memulai:</h3></div>
+        <div class="card-body">
+          <ol style="padding-left:20px;margin:0;">
+            <li style="margin-bottom:8px;">Catat setiap makanan yang dikonsumsi</li>
+            <li style="margin-bottom:8px;">Update berat badan secara rutin</li>
+            <li style="margin-bottom:8px;">Lihat rekomendasi menu sehat</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DASHBOARD DATA TERCATAT (P024) ==================== -->
+  <div class="page" data-page="dashboard-data" id="page-dashboard-data">
+    <header class="page-header">
+      <h1>Dashboard NutriSurvey</h1>
+      <button class="header-action" onclick="App.navigate('profil')">&#128100;</button>
+    </header>
+    <div class="page-content" id="dashboardDataContent">
+      <div class="loading-wrap"><div class="loading-spinner"></div><p>Memuat data...</p></div>
+    </div>
+  </div>
+
+  <!-- ==================== PILIH WAKTU MAKAN (P002) ==================== -->
+  <div class="page" data-page="catat-makanan" id="page-catat-makanan">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Pilih Waktu Makan</h1>
+    </header>
+    <div class="page-content" id="catatMakananContent">
+      <div class="section-header"><h2>Kapan Anda makan?</h2></div>
+      <div class="radio-group" id="waktuRadioGroup">
+        <label class="radio-item">
+          <input type="radio" name="waktu_makan" value="Sarapan" checked onchange="Konsumsi.pilihWaktu('Sarapan')">
+          <span class="radio-indicator"></span>
+          <span class="radio-label">Sarapan</span>
+        </label>
+        <label class="radio-item">
+          <input type="radio" name="waktu_makan" value="Makan Siang" onchange="Konsumsi.pilihWaktu('Makan Siang')">
+          <span class="radio-indicator"></span>
+          <span class="radio-label">Makan Siang</span>
+        </label>
+        <label class="radio-item">
+          <input type="radio" name="waktu_makan" value="Makan Malam" onchange="Konsumsi.pilihWaktu('Makan Malam')">
+          <span class="radio-indicator"></span>
+          <span class="radio-label">Makan Malam</span>
+        </label>
+      </div>
+      <div style="margin-top:20px;">
+        <button class="btn btn-primary" onclick="App.navigate('cari-makanan')">LANJUT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PILIH MAKANAN ANDA (P003) ==================== -->
+  <div class="page" data-page="cari-makanan" id="page-cari-makanan">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('catat-makanan')">&#8592;</button>
+      <h1>Pilih Makanan Anda</h1>
+    </header>
+    <div class="page-content" id="cariMakananContent"></div>
+  </div>
+
+  <!-- ==================== CATAT MANUAL (P004) ==================== -->
+  <div class="page" data-page="catat-manual" id="page-catat-manual">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('catat-makanan')">&#8592;</button>
+      <h1>Catat Manual</h1>
+    </header>
+    <div class="page-content" id="catatManualContent"></div>
+  </div>
+
+  <!-- ==================== DETAIL KONSUMSI (P005) ==================== -->
+  <div class="page" data-page="detail-konsumsi" id="page-detail-konsumsi">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('cari-makanan')">&#8592;</button>
+      <h1>Detail Konsumsi</h1>
+    </header>
+    <div class="page-content" id="detailKonsumsiContent"></div>
+  </div>
+
+  <!-- ==================== DATA TERSIMPAN (P006) ==================== -->
+  <div class="page" data-page="konsumsi-tersimpan" id="page-konsumsi-tersimpan">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Data Tersimpan</h1>
+    </header>
+    <div class="page-content" id="konsumsiTersimpanContent"></div>
+  </div>
+
+  <!-- ==================== REKOMENDASI MENU (P007) ==================== -->
+  <div class="page" data-page="rekomendasi-menu" id="page-rekomendasi-menu">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Rekomendasi Menu</h1>
+    </header>
+    <div class="page-content" id="rekomendasiMenuContent">
+      <div class="tips-card">
+        <div style="font-size:14px;font-weight:700;color:#F57F17;margin-bottom:4px;">&#128161; Tips nutrisi Anda</div>
+        <div style="font-size:13px;color:var(--text-light);">Berdasarkan target 2000 kalori harian Anda, disarankan untuk mengonsumsi makanan tinggi serat dan protein untuk menjaga energi sepanjang hari. Pilih variasi menu dari setiap kategori untuk nutrisi seimbang.</div>
+      </div>
+
+      <div class="section-header"><h2>Menu untuk Makan Siang:</h2></div>
+
+      <div class="card" style="margin-bottom:16px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="font-size:32px;">&#127834;</div>
+          <div>
+            <div style="font-size:16px;font-weight:700;">Nasi Goreng Sayur</div>
+          </div>
+        </div>
+        <div class="nutrisi-detail" style="margin:0;">
+          <div class="nutrisi-row">
+            <span class="lbl">Kalori</span>
+            <span class="val">450</span>
+          </div>
+          <div class="nutrisi-row">
+            <span class="lbl">Protein</span>
+            <span class="val">18g</span>
+          </div>
+          <div class="nutrisi-row">
+            <span class="lbl">Lemak</span>
+            <span class="val">12g</span>
+          </div>
+          <div class="nutrisi-row">
+            <span class="lbl">Karbohidrat</span>
+            <span class="val">65g</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
+          <span class="badge badge-green">Tinggi serat</span>
+          <span class="badge badge-green">Rendah lemak</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+          <div style="font-size:32px;">&#128031;</div>
+          <div>
+            <div style="font-size:16px;font-weight:700;">Ikan Bakar + Sayur</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-blue">Tinggi protein</span>
+          <span class="badge badge-blue">Omega 3</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;padding:16px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <div style="text-align:center;padding:8px;background:var(--gray-50);border-radius:var(--radius-sm);">
+            <div style="font-size:20px;">&#129368;</div>
+            <div style="font-size:12px;font-weight:600;">Ayam Panggang Salad</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:var(--gray-50);border-radius:var(--radius-sm);">
+            <div style="font-size:20px;">&#127838;</div>
+            <div style="font-size:12px;font-weight:600;">Gado-Gado</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:var(--gray-50);border-radius:var(--radius-sm);">
+            <div style="font-size:20px;">&#128031;</div>
+            <div style="font-size:12px;font-weight:600;">Ikan Bakar + Sayur</div>
+          </div>
+          <div style="text-align:center;padding:8px;background:var(--gray-50);border-radius:var(--radius-sm);">
+            <div style="font-size:20px;">&#127834;</div>
+            <div style="font-size:12px;font-weight:600;">Nasi Goreng Sayur</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="badge badge-green">Low carb</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="App.navigate('rekomendasi')">BERIKAN REKOMENDASI</button>
+    </div>
+  </div>
+
+  <!-- ==================== PREFERENSI ANDA (P008) ==================== -->
+  <div class="page" data-page="preferensi-anda" id="page-preferensi-anda">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Preferensi Anda</h1>
+    </header>
+    <div class="page-content" id="preferensiAndaContent">
+      <div class="card card-green">
+        <div class="card-header"><div class="card-icon">&#127919;</div><h3>Status Nutrisi Anda</h3></div>
+        <div class="card-body">Atur preferensi makanan untuk mendapatkan rekomendasi menu yang sesuai dengan kebutuhan dan target kesehatan Anda.</div>
+      </div>
+      <div class="section-header"><h2>Preferensi Diet:</h2></div>
+      <div class="card">
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox"><span class="check-indicator"></span><span class="check-label">Alergi makanan</span></label>
+          <label class="check-item"><input type="checkbox"><span class="check-indicator"></span><span class="check-label">Target kesehatan khusus</span></label>
+          <label class="check-item"><input type="checkbox"><span class="check-indicator"></span><span class="check-label">Preferensi Diet (vegetarian, bebas gula, dll)</span></label>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="App.navigate('atur-preferensi')">ATUR PREFERENSI</button>
+      <div style="text-align:center;margin-top:16px;"><a href="#" onclick="App.navigate('dashboard')" style="font-size:13px;color:var(--text-light);">Lewati, lanjutkan tanpa preferensi</a></div>
+    </div>
+  </div>
+
+  <!-- ==================== ATUR PREFERENSI (P009) ==================== -->
+  <div class="page" data-page="atur-preferensi" id="page-atur-preferensi">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('preferensi-anda')">&#8592;</button>
+      <h1>Atur Preferensi</h1>
+    </header>
+    <div class="page-content" id="aturPreferensiContent">
+      <form id="aturPreferensiForm">
+        <div class="form-group">
+          <label>Alergi Makanan:</label>
+          <input class="form-input" id="prefAlergiInput" type="text" placeholder="Contoh: Susu, Telur, Kacang, Ikan...">
+        </div>
+        <div class="form-group">
+          <label>Preferensi Diet:</label>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="prefDietRadio" value="vegetarian"><span class="radio-indicator"></span><span class="radio-label">Vegetarian</span></label>
+            <label class="radio-item"><input type="radio" name="prefDietRadio" value="halal"><span class="radio-indicator"></span><span class="radio-label">Halal</span></label>
+          </div>
+          <div class="check-group" style="margin-top:8px;">
+            <label class="check-item"><input type="checkbox"><span class="check-indicator"></span><span class="check-label">Preferensi Diet (vegetarian, bebas gula, dll)</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Makanan yang Tidak Disukai:</label>
+          <input class="form-input" id="prefTidakDisukai" type="text" placeholder="Contoh: Seafood, Daging...">
+        </div>
+        <div class="form-group">
+          <label>Target Khusus</label>
+          <input class="form-input" id="prefTargetKhusus" type="text" placeholder="Contoh: Tinggi protein, Rendah lemak">
+        </div>
+        <div id="aturPrefError" class="alert alert-error" style="display:none"></div>
+        <button type="submit" class="btn btn-primary" id="aturPrefBtn">SIMPAN PREFERENSI</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== REKOMENDASI (JS-driven content) ==================== -->
+  <div class="page" data-page="rekomendasi" id="page-rekomendasi">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Rekomendasi</h1>
+    </header>
+    <div class="page-content" id="rekomendasiContent"></div>
+  </div>
+
+  <!-- ==================== PREFERENSI (JS-driven) ==================== -->
+  <div class="page" data-page="preferensi" id="page-preferensi">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('rekomendasi')">&#8592;</button>
+      <h1>Preferensi</h1>
+    </header>
+    <div class="page-content" id="preferensiContent"></div>
+  </div>
+
+  <!-- ==================== MENU REKOMENDASI (P010) ==================== -->
+  <div class="page" data-page="menu-rekomendasi" id="page-menu-rekomendasi">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('rekomendasi-menu')">&#8592;</button>
+      <h1>Menu Rekomendasi</h1>
+    </header>
+    <div class="page-content" id="menuRekomendasiContent">
+      <div class="rekomendasi-card"><div class="rek-icon">&#127860;</div><div class="rek-title">Menu Dipilih Untuk Anda!</div><div class="rek-desc">Berdasarkan kalkulasi: 850 kal tersisa</div></div>
+
+      <div class="section-header"><h2>Top 3 Pilihan Makan Siang:</h2></div>
+
+      <!-- BEST MATCH -->
+      <div class="card" style="border:2px solid var(--orange);margin-bottom:16px;">
+        <div class="card-header"><h3>&#127834; Nasi Goreng Sayur</h3><span style="background:var(--orange);color:var(--white);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">BEST MATCH</span></div>
+        <div class="nutrisi-detail" style="margin:0 0 12px;">
+          <div class="nutrisi-row"><span class="lbl">Kalori</span><span class="val orange">450</span></div>
+          <div class="nutrisi-row"><span class="lbl">Protein</span><span class="val">20g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Lemak</span><span class="val">10g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Karbohidrat</span><span class="val">62g</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-light);padding:4px 0;"><span style="color:var(--green);font-weight:700;">&#10003;</span> Tinggi Protein dan rendah lemak</div>
+      </div>
+
+      <!-- IKAN BAKAR + NASI MERAH -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-header"><h3>&#128031; Ikan Bakar + Nasi Merah</h3></div>
+        <div class="nutrisi-detail" style="margin:0 0 8px;">
+          <div class="nutrisi-row"><span class="lbl">Kalori</span><span class="val orange">420</span></div>
+          <div class="nutrisi-row"><span class="lbl">Protein</span><span class="val">30g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Lemak</span><span class="val">8g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Karbohidrat</span><span class="val">55g</span></div>
+        </div>
+        <span class="badge badge-blue">Alternatif Sehat</span>
+      </div>
+
+      <!-- SALAD AYAM PANGGANG -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-header"><h3>&#129368; Salad Ayam Panggang</h3></div>
+        <div class="nutrisi-detail" style="margin:0 0 8px;">
+          <div class="nutrisi-row"><span class="lbl">Kalori</span><span class="val orange">350</span></div>
+          <div class="nutrisi-row"><span class="lbl">Protein</span><span class="val">25g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Lemak</span><span class="val">12g</span></div>
+          <div class="nutrisi-row"><span class="lbl">Karbohidrat</span><span class="val">20g</span></div>
+        </div>
+        <span class="badge badge-green">Low Calorie</span>
+      </div>
+
+      <button class="btn btn-primary" onclick="App.showToast('Pilihan dicatat!','success')">Catat Pilihan</button>
+      <div style="height:10px;"></div>
+      <button class="btn btn-secondary" onclick="App.navigate('rekomendasi-menu')">Lihat Lagi...</button>
+    </div>
+  </div>
+
+  <!-- ==================== PEMANTAUAN BERAT (JS-driven) ==================== -->
+  <div class="page" data-page="berat-badan" id="page-berat-badan">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Berat Badan</h1>
+    </header>
+    <div class="page-content" id="beratBadanContent"></div>
+  </div>
+
+  <!-- ==================== CATAT BERAT (JS-driven) ==================== -->
+  <div class="page" data-page="catat-berat" id="page-catat-berat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('berat-badan')">&#8592;</button>
+      <h1>Catat Berat Badan</h1>
+    </header>
+    <div class="page-content" id="catatBeratContent"></div>
+  </div>
+
+  <!-- ==================== KONFIRMASI BERAT (JS-driven) ==================== -->
+  <div class="page" data-page="konfirmasi-berat" id="page-konfirmasi-berat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('catat-berat')">&#8592;</button>
+      <h1>Konfirmasi Berat</h1>
+    </header>
+    <div class="page-content" id="konfirmasiBeratContent"></div>
+  </div>
+
+  <!-- ==================== BERAT TERSIMPAN (JS-driven) ==================== -->
+  <div class="page" data-page="berat-tersimpan" id="page-berat-tersimpan">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('berat-badan')">&#8592;</button>
+      <h1>Berat Tersimpan</h1>
+    </header>
+    <div class="page-content" id="beratTersimpanContent"></div>
+  </div>
+
+  <!-- ==================== PEMANTAUAN BERAT (P018) ==================== -->
+  <div class="page" data-page="pemantauan-berat" id="page-pemantauan-berat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Pemantauan Berat Badan</h1>
+    </header>
+    <div class="page-content" id="pemantauanBeratContent">
+      <div class="card card-blue" style="text-align:center;padding:20px;">
+        <div style="font-size:14px;color:var(--text-light);margin-bottom:4px;">Berat Badan Saat Ini:</div>
+        <div style="font-size:48px;font-weight:800;color:var(--blue);">65</div>
+        <div style="font-size:18px;color:var(--text-light);">kg</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Terakhir update: 28 Nov 2025</div>
+      </div>
+      <div class="section-header"><h2>&#128200; Grafik Perkembangan</h2></div>
+      <div class="card">
+        <div style="width:100%;height:160px;background:linear-gradient(180deg,rgba(255,107,53,0.08) 0%,rgba(255,107,53,0.02) 100%);border-radius:var(--radius-sm);display:flex;align-items:flex-end;padding:12px 8px;gap:6px;">
+          <div style="flex:1;border-radius:3px 3px 0 0;background:var(--orange);min-height:8px;height:60%;opacity:0.6;"></div>
+          <div style="flex:1;border-radius:3px 3px 0 0;background:var(--orange);min-height:8px;height:75%;opacity:0.6;"></div>
+          <div style="flex:1;border-radius:3px 3px 0 0;background:var(--orange);min-height:8px;height:55%;opacity:0.6;"></div>
+          <div style="flex:1;border-radius:3px 3px 0 0;background:var(--orange);min-height:8px;height:80%;opacity:0.6;"></div>
+          <div style="flex:1;border-radius:3px 3px 0 0;background:var(--orange);min-height:8px;height:70%;opacity:0.6;"></div>
+          <div style="flex:1;border-radius:3px 3px 0 0;background:var(--orange);min-height:8px;height:85%;opacity:0.6;"></div>
+          <div style="flex:1;border-radius:3px 3px 0 0;background:var(--orange);min-height:8px;height:65%;opacity:0.6;"></div>
+        </div>
+      </div>
+      <div class="card card-green">
+        <div class="card-header"><h3>&#128200; Progress Bulan Ini</h3></div>
+        <div style="display:flex;justify-content:space-around;margin-bottom:8px;">
+          <div style="text-align:center;"><div style="font-size:22px;font-weight:700;color:var(--green);">+3</div><div style="font-size:11px;color:var(--text-light);">Naik (kg)</div></div>
+          <div style="text-align:center;"><div style="font-size:22px;font-weight:700;color:var(--blue);">65</div><div style="font-size:11px;color:var(--text-light);">Saat ini (kg)</div></div>
+        </div>
+        <div style="font-size:13px;color:var(--text-light);">Anda bulan ini: +3 kg, Lanjutkan: 65 kg</div>
+      </div>
+      <button class="btn btn-primary" onclick="App.navigate('catat-berat')">&#10133; TAMBAH DATA</button>
+    </div>
+  </div>
+
+  <!-- ==================== CATAT BERAT DETAIL (P019) ==================== -->
+  <div class="page" data-page="catat-berat-detail" id="page-catat-berat-detail">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('pemantauan-berat')">&#8592;</button>
+      <h1>Catat Berat Badan</h1>
+    </header>
+    <div class="page-content" id="catatBeratDetailContent">
+      <div class="card card-blue">
+        <div class="card-header"><div class="card-icon">&#9888;&#65039;</div><h3>Masukkan Data Anda</h3></div>
+        <div class="card-body">Catat berat badan Anda saat ini dengan akurat</div>
+      </div>
+      <form id="catatBeratForm">
+        <div class="form-group">
+          <label>Tanggal</label>
+          <input class="form-input" id="beratTgl" type="date">
+        </div>
+        <div class="form-group">
+          <label>Berat Badan (kg)</label>
+          <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin:16px 0;">
+            <button type="button" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--gray-200);background:var(--white);font-size:24px;font-weight:700;cursor:pointer;" onclick="adjBerat(-0.5)">&#8722;</button>
+            <div><div style="font-size:32px;font-weight:800;min-width:80px;text-align:center;" id="beratDisplay">65.0</div><div style="font-size:16px;color:var(--text-light);text-align:center;">kg</div></div>
+            <button type="button" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--gray-200);background:var(--white);font-size:24px;font-weight:700;cursor:pointer;" onclick="adjBerat(0.5)">&#43;</button>
+          </div>
+          <input class="form-input" id="beratAngka" type="number" step="0.1" min="1" max="500" value="65" style="display:none;">
+          <div style="display:flex;gap:8px;justify-content:center;">
+            <button type="button" style="padding:8px 16px;border-radius:var(--radius-sm);border:2px solid var(--gray-200);background:var(--white);font-size:14px;font-weight:600;cursor:pointer;" onclick="adjBerat(-0.5)">-0.5</button>
+            <button type="button" style="padding:8px 16px;border-radius:var(--radius-sm);border:2px solid var(--gray-200);background:var(--white);font-size:14px;font-weight:600;cursor:pointer;" onclick="adjBerat(0.5)">+0.5</button>
+            <button type="button" style="padding:8px 16px;border-radius:var(--radius-sm);border:2px solid var(--gray-200);background:var(--white);font-size:14px;font-weight:600;cursor:pointer;" onclick="adjBerat(1.0)">+1.0</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Catatan (opsional)</label>
+          <textarea class="form-textarea" id="beratCatatanText" placeholder="Contoh: Setelah olahraga pagi"></textarea>
+        </div>
+        <div id="catatBeratError" class="alert alert-error" style="display:none"></div>
+        <button type="submit" class="btn btn-primary" id="catatBeratSubmitBtn">&#128190; SIMPAN</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== KONFIRMASI BERAT DETAIL (P020) ==================== -->
+  <div class="page" data-page="konfirmasi-berat-detail" id="page-konfirmasi-berat-detail">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('catat-berat')">&#8592;</button>
+      <h1>Pemantauan Berat Badan</h1>
+    </header>
+    <div class="page-content" id="konfirmasiBeratDetailContent">
+      <div class="card card-orange">
+        <div class="card-header"><div class="card-icon">&#128270;</div><h3>Konfirmasi Data</h3></div>
+        <div class="card-body">Pastikan data sudah benar!</div>
+      </div>
+      <div style="background:var(--gray-50);border-radius:var(--radius);padding:16px;margin:16px 0;">
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;"><span style="color:var(--text-light);">Tanggal</span><span style="font-weight:600;">28 November 2025</span></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;"><span style="color:var(--text-light);">Berat</span><span style="font-weight:800;font-size:20px;color:var(--blue);">65 kg</span></div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;"><span style="color:var(--text-light);">Catatan</span><span style="color:var(--text-light);">-</span></div>
+      </div>
+      <div id="konfirmasiBeratError" class="alert alert-error" style="display:none"></div>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="App.navigate('catat-berat')">Batal</button>
+        <button class="btn btn-success" onclick="App.showToast('Data berat badan berhasil disimpan!','success');App.navigate('sukses-berat')">&#128190; Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SUKSES BERAT (P021) ==================== -->
+  <div class="page" data-page="sukses-berat" id="page-sukses-berat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Pemantauan Berat Badan</h1>
+    </header>
+    <div class="page-content" id="suksesBeratContent">
+      <div style="text-align:center;padding:48px 24px;">
+        <div style="width:80px;height:80px;border-radius:50%;background:var(--green);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 16px;">&#10003;</div>
+        <h2 style="font-size:22px;font-weight:700;margin-bottom:8px;">Data Berhasil Disimpan!</h2>
+        <p style="font-size:14px;color:var(--text-light);margin-bottom:24px;">Berat badan: <strong>65 kg</strong> telah ditambahkan</p>
+      </div>
+      <div class="card card-blue" style="text-align:center;padding:16px;">
+        <div style="font-size:14px;color:var(--text-light);">Berat Badan Terkini:</div>
+        <div style="font-size:36px;font-weight:800;color:var(--blue);">65 kg</div>
+        <div style="font-size:12px;color:var(--text-muted);">28 November 2025</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>&#128200; Grafik Diperbarui</h3></div>
+        <div style="width:100%;height:80px;background:linear-gradient(180deg,rgba(76,175,80,0.08) 0%,rgba(76,175,80,0.02) 100%);border-radius:var(--radius-sm);display:flex;align-items:flex-end;padding:8px;gap:4px;">
+          <div style="flex:1;border-radius:2px 2px 0 0;background:var(--green);height:50%;opacity:0.5;"></div>
+          <div style="flex:1;border-radius:2px 2px 0 0;background:var(--green);height:70%;opacity:0.5;"></div>
+          <div style="flex:1;border-radius:2px 2px 0 0;background:var(--green);height:60%;opacity:0.5;"></div>
+          <div style="flex:1;border-radius:2px 2px 0 0;background:var(--green);height:80%;opacity:0.5;"></div>
+          <div style="flex:1;border-radius:2px 2px 0 0;background:var(--green);height:65%;opacity:0.5;"></div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="App.navigate('catat-berat')">&#10133; TAMBAH LAGI</button>
+      <div style="height:10px;"></div>
+      <button class="btn btn-secondary" onclick="App.navigate('dashboard')">&#127968; KE DASHBOARD</button>
+    </div>
+  </div>
+
+  <!-- ==================== ERROR BERAT (P022) ==================== -->
+  <div class="page" data-page="error-berat" id="page-error-berat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('catat-berat')">&#8592;</button>
+      <h1>Catat Berat Badan</h1>
+    </header>
+    <div class="page-content" id="errorBeratContent">
+      <div class="alert alert-error" style="padding:16px;">
+        <span class="alert-icon">&#9888;&#65039;</span>
+        <div><strong>Input Tidak Valid</strong><br><span style="font-size:13px;">Masukkan angka yang valid untuk berat badan</span></div>
+      </div>
+      <form id="errorBeratForm">
+        <div class="form-group">
+          <label>Tanggal</label>
+          <input class="form-input error" id="errBeratTgl" type="date">
+        </div>
+        <div class="form-group">
+          <label>Berat Badan (kg)</label>
+          <div style="position:relative;">
+            <input class="form-input error" id="errBeratInput" type="text" placeholder="Masukkan berat" value="abc">
+            <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--red);font-size:18px;">&#9888;&#65039;</span>
+          </div>
+          <div class="hint" style="color:var(--red);">Hanya angka yang diperbolehkan (contoh: 65)</div>
+        </div>
+        <div class="form-group">
+          <label>Catatan (opsional)</label>
+          <textarea class="form-textarea" id="errBeratCatatan" placeholder="Contoh: Setelah olahraga pagi"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" disabled style="opacity:0.5;">&#128190; SIMPAN</button>
+      </form>
+      <div class="card card-orange" style="margin-top:16px;">
+        <div class="card-header"><div class="card-icon">&#128161;</div><h3>Tips</h3></div>
+        <div class="card-body">Masukkan berat dalam angka numerik. Contoh: 65.5 atau 70</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ANALISIS (JS-driven) ==================== -->
+  <div class="page" data-page="analisis" id="page-analisis">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Analisis</h1>
+    </header>
+    <div class="page-content" id="analisisContent"></div>
+  </div>
+
+  <!-- ==================== LAPORAN ANALISIS (P025 + P026) ==================== -->
+  <div class="page" data-page="laporan-analisis" id="page-laporan-analisis">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Laporan Analisis</h1>
+    </header>
+    <div class="page-content" id="laporanAnalisisContent">
+      <div class="card card-green">
+        <div class="card-header"><div class="card-icon">&#128202;</div><h3>Pantau Progress Anda</h3></div>
+        <div class="card-body">Lihat perkembangan nutrisi dan kesehatan Anda dari waktu ke waktu</div>
+      </div>
+      <div class="section-header"><h2>&#128197; Pilih Periode Laporan:</h2></div>
+      <div class="card">
+        <div class="periode-card" onclick="Analisis.pilihPeriode('harian')">
+          <div class="periode-icon">&#128197;</div>
+          <div class="periode-text">
+            <div class="periode-title">Harian</div>
+            <div class="periode-desc">Lihat data konsumsi hari ini</div>
+          </div>
+          <div class="periode-arrow">&#8250;</div>
+        </div>
+        <div style="border-top:1px solid var(--gray-100);margin:12px 0;"></div>
+        <div class="periode-card active" style="border-color:var(--orange);" onclick="Analisis.pilihPeriode('mingguan')">
+          <div class="periode-icon">&#128202;</div>
+          <div class="periode-text">
+            <div class="periode-title">Mingguan</div>
+            <div class="periode-desc">Analisis 7 hari terakhir</div>
+          </div>
+          <div class="periode-arrow">&#8250;</div>
+        </div>
+        <div style="border-top:1px solid var(--gray-100);margin:12px 0;"></div>
+        <div class="periode-card" onclick="Analisis.pilihPeriode('bulanan')">
+          <div class="periode-icon">&#128200;</div>
+          <div class="periode-text">
+            <div class="periode-title">Bulanan</div>
+            <div class="periode-desc">Analisis 30 hari terakhir</div>
+          </div>
+          <div class="periode-arrow">&#8250;</div>
+        </div>
+      </div>
+      <div class="section-header"><h2>&#128200; Ringkasan Cepat (7 Hari):</h2></div>
+      <div class="card card-green">
+        <div class="summary-item">
+          <span class="s-label">&#128293; Kalori rata-rata</span>
+          <span class="s-value" style="color:var(--orange);">1650 kcal/hari</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">&#127919; Target tercapai</span>
+          <span class="s-value" style="color:var(--green);">5/7 hari</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">&#128200; Berat Turun</span>
+          <span class="s-value" style="color:var(--blue);">1.2 kg</span>
+        </div>
+        <div class="summary-item" style="border-bottom:none;">
+          <span class="s-label">&#9989;</span>
+          <span class="s-value" style="color:var(--green);font-size:13px;">Progress bagus! Pertahankan!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LOADING ANALISIS (P026) ==================== -->
+  <div class="page" data-page="loading-analisis" id="page-loading-analisis">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('laporan-analisis')">&#8592;</button>
+      <h1>Analisis Mingguan</h1>
+    </header>
+    <div class="page-content" style="text-align:center;padding-top:40px;">
+      <div style="font-size:56px;margin-bottom:16px;display:inline-block;animation:spin 2s linear infinite;">&#9203;</div>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Memproses Data...</h2>
+      <p style="font-size:14px;color:var(--text-light);margin-bottom:24px;">Menganalisis konsumsi 7 hari terakhir</p>
+      <div class="progress-bar" style="margin:0 auto 24px;max-width:280px;">
+        <div class="progress-fill orange" id="loadingProgress" style="width:65%;animation:pulse 2s ease infinite;"></div>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Mengolah data dan Statistik...</p>
+      <div class="card" style="text-align:left;max-width:320px;margin:0 auto;">
+        <div class="status-list">
+          <div class="status-item" id="statusData">
+            <div class="status-icon">&#10003;</div>
+            <span>Data tersimpan</span>
+          </div>
+          <div class="status-item" id="statusHitung">
+            <div class="status-icon"></div>
+            <span>Menghitung...</span>
+          </div>
+          <div class="status-item" id="statusVisual">
+            <div class="status-icon"></div>
+            <span>Visualisasi...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== LAPORAN 7 HARI (P025) ==================== -->
+  <div class="page" data-page="laporan-7hari" id="page-laporan-7hari">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('laporan-analisis')">&#8592;</button>
+      <h1>Laporan</h1>
+    </header>
+    <div class="page-content" id="laporan7HariContent">
+      <div class="card card-blue" style="text-align:center;padding:12px;">
+        <span class="badge badge-blue" style="font-size:13px;">&#128197; 22 Nov - 28 Nov 2025 (7 hari)</span>
+      </div>
+      <div class="card card-green" style="display:flex;align-items:center;gap:16px;padding-top:12px;padding-bottom:12px;">
+        <div style="flex:1;text-align:left;">
+          <div style="font-size:13px;color:var(--text-light);">Rata-Rata Kalori</div>
+          <div style="font-size:28px;font-weight:800;color:var(--green);">1650</div>
+          <div style="font-size:12px;color:var(--text-light);">kcal/hari</div>
+        </div>
+        <div style="text-align:right;">
+          <span class="badge badge-green" style="font-size:13px;">85% dari target</span>
+        </div>
+      </div>
+      <div class="card card-blue">
+        <div class="card-header"><h3>Perubahan BB</h3></div>
+        <div style="text-align:center;padding:8px;">
+          <span style="font-size:36px;font-weight:800;color:var(--blue);">-1.2</span>
+          <span style="font-size:16px;color:var(--text-light);"> kg</span>
+          <div style="font-size:13px;color:var(--text-light);margin-top:4px;">Berat turun 1.2 kg</div>
+        </div>
+      </div>
+      <div class="section-header"><h2>&#128202; Grafik Asupan Kalori</h2></div>
+      <div class="card">
+        <div style="display:flex;align-items:flex-end;gap:6px;height:160px;padding:8px 0;">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1450</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:65%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Sen</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1800</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:80%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Sel</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1200</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:55%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Rab</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1950</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:90%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Kam</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1700</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:75%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Jum</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1880</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:85%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Sab</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--orange);">1550</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--orange);height:70%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-light);margin-top:6px;">Min</div>
+          </div>
+        </div>
+      </div>
+      <div class="section-header"><h2>&#128200; Perbandingan Asupan Nutrisi</h2></div>
+      <div class="card">
+        <div class="bar-item"><div class="bar-label">Protein</div><div class="bar-track"><div class="bar-fill protein" style="width:55%"></div></div><div class="bar-value">56g</div></div>
+        <div style="font-size:11px;color:var(--text-muted);margin:-6px 0 10px 90px;">rata-rata</div>
+        <div class="bar-item"><div class="bar-label">Lemak</div><div class="bar-track"><div class="bar-fill lemak" style="width:45%"></div></div><div class="bar-value">42g</div></div>
+        <div style="font-size:11px;color:var(--text-muted);margin:-6px 0 10px 90px;">rata-rata</div>
+        <div class="bar-item"><div class="bar-label">Karbohidrat</div><div class="bar-track"><div class="bar-fill karbo" style="width:70%"></div></div><div class="bar-value">185g</div></div>
+        <div style="font-size:11px;color:var(--text-muted);margin:-6px 0 0 90px;">rata-rata</div>
+      </div>
+      <button class="btn btn-outline" onclick="App.showToast('Menyiapkan PDF...','success')">&#128196; Export PDF</button>
+      <div style="height:10px;"></div>
+      <button class="btn btn-primary" onclick="App.navigate('laporan-analisis')">&#128269; Lihat Detail</button>
+    </div>
+  </div>
+
+  <!-- ==================== HASIL ANALISIS WARNING (P028) ==================== -->
+  <div class="page" data-page="hasil-analisis-warning" id="page-hasil-analisis-warning">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('laporan-analisis')">&#8592;</button>
+      <h1>Analisis Mingguan</h1>
+    </header>
+    <div class="page-content" id="hasilAnalisisWarningContent">
+      <div class="card card-orange">
+        <div class="card-header"><div class="card-icon">&#9888;&#65039;</div><h3 id="warningHeading">Data Belum Cukup</h3></div>
+        <div class="card-body">
+          <p id="warningDesc" style="margin-bottom:8px;">Anda telah menggunakan aplikasi kurang dari 7 hari</p>
+          <p style="font-size:13px;">Silahkan catat konsumsi Anda setiap hari untuk mendapatkan analisis lengkap</p>
+        </div>
+      </div>
+      <div class="card card-blue">
+        <div class="card-header"><div class="card-icon">&#128161;</div><h3>Apa yang bisa dilakukan?</h3></div>
+        <div class="tip-item">
+          <div class="tip-bullet"></div>
+          <span>Lihat laporan harian untuk data hari ini</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-bullet"></div>
+          <span>Lanjutkan catat makanan setiap hari</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-bullet"></div>
+          <span>Kembali dalam beberapa hari untuk melihat analisis mingguan lengkap</span>
+        </div>
+      </div>
+      <div class="section-header"><h2>&#128200; Data Tersedia (3 Hari):</h2></div>
+      <div class="card">
+        <div class="summary-item">
+          <span class="s-label">&#128293; Saat ini</span>
+          <span class="s-value" style="color:var(--orange);">1580 kcal/hari</span>
+        </div>
+        <div class="summary-item" style="border-bottom:none;">
+          <span class="s-label">&#127919; Target Tercapai</span>
+          <span class="s-value" style="color:var(--green);">2/3 hari</span>
+        </div>
+      </div>
+      <button class="btn btn-outline" onclick="App.navigate('laporan-analisis')">&#128196; Laporan Harian</button>
+      <div style="height:10px;"></div>
+      <button class="btn btn-primary" onclick="App.navigate('catat-makanan')">&#127858; Catat Makanan</button>
+    </div>
+  </div>
+
+  <!-- ==================== NOTIFIKASI / PENGATURAN (JS-driven) ==================== -->
+  <div class="page" data-page="notifikasi" id="page-notifikasi">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('profil')">&#8592;</button>
+      <h1>Notifikasi</h1>
+    </header>
+    <div class="page-content" id="notifikasiContent"></div>
+  </div>
+
+  <!-- ==================== MENU PROFIL (P029) ==================== -->
+  <div class="page" data-page="menu-profil" id="page-menu-profil">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Menu Profil</h1>
+    </header>
+    <div class="page-content" id="menuProfilContent">
+      <div class="card" style="text-align:center;padding:24px;">
+        <div class="menu-profil-avatar" style="width:72px;height:72px;border-radius:50%;background:var(--orange);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;margin:0 auto 12px;">U</div>
+        <h2 class="menu-profil-nama" style="font-size:20px;font-weight:700;">Pengguna</h2>
+        <p class="menu-profil-email" style="font-size:14px;color:var(--text-light);">pengguna@email.com</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--gray-100);cursor:pointer;" onclick="App.navigate('atur-preferensi')">
+          <div style="width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(255,107,53,0.12);color:var(--orange);">&#129381;</div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Preferensi Diet</div><div style="font-size:12px;color:var(--text-light);">Atur preferensi makanan</div></div>
+          <div style="color:var(--text-muted);font-size:18px;">&#8250;</div>
+        </div>
+      </div>
+      <div class="card" style="border:2px solid var(--green);border-radius:var(--radius);">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 0;cursor:pointer;" onclick="App.navigate('pengaturan-notifikasi')">
+          <div style="width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(76,175,80,0.12);color:var(--green);">&#128276;</div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Pengingat Notifikasi</div><div style="font-size:12px;color:var(--text-light);">Atur pengingat makan</div></div>
+          <div style="color:var(--text-muted);font-size:18px;">&#8250;</div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--gray-100);cursor:pointer;" onclick="App.showToast('Fitur Privasi & Keamanan','info')">
+          <div style="width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(52,152,219,0.12);color:var(--blue);">&#128274;</div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Privasi &amp; Keamanan</div><div style="font-size:12px;color:var(--text-light);">Pengaturan akun Anda</div></div>
+          <div style="color:var(--text-muted);font-size:18px;">&#8250;</div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 0;cursor:pointer;" onclick="App.showToast('NutriSurvey v1.0.0','info')">
+          <div style="width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(156,39,176,0.12);color:var(--purple);">&#9432;</div>
+          <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Tentang Aplikasi</div><div style="font-size:12px;color:var(--text-light);">Info dan versi aplikasi</div></div>
+          <div style="color:var(--text-muted);font-size:18px;">&#8250;</div>
+        </div>
+      </div>
+      <div class="card card-blue" style="margin-top:16px;">
+        <div class="card-header"><div class="card-icon">&#128161;</div><h3>Tips</h3></div>
+        <div class="card-body">
+          Anda dapat mengatur notifikasi yang sesuai dengan kebutuhan
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PROFIL (JS-driven) ==================== -->
+  <div class="page" data-page="profil" id="page-profil">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Profil</h1>
+      <button class="header-action" onclick="Auth.logout()">&#128682;</button>
+    </header>
+    <div class="page-content" id="profilContent"></div>
+  </div>
+
+  <!-- ==================== RIWAYAT (JS-driven) ==================== -->
+  <div class="page" data-page="riwayat" id="page-riwayat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Riwayat</h1>
+    </header>
+    <div class="page-content" id="riwayatContent"></div>
+  </div>
+
+  <!-- ==================== PENGATURAN NOTIFIKASI (P030) ==================== -->
+  <div class="page" data-page="pengaturan-notifikasi" id="page-pengaturan-notifikasi">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('menu-profil')">&#8592;</button>
+      <h1>Pengaturan Notifikasi</h1>
+    </header>
+    <div class="page-content" id="pengaturanNotifikasiContent">
+      <div class="card card-blue">
+        <div class="card-header"><div class="card-icon">&#128276;</div><h3>Pengingat Makan</h3></div>
+        <div class="card-body">Atur pengingat waktu makan agar tidak terlewat</div>
+      </div>
+      <div style="border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;background:rgba(255,107,53,0.08);">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,107,53,0.15);color:var(--orange);display:flex;align-items:center;justify-content:center;font-size:18px;">&#127860;</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Sarapan</div><div style="font-size:12px;color:var(--text-light);">Waktu makan pagi</div></div>
+        <div style="font-size:18px;font-weight:700;min-width:72px;text-align:center;color:var(--orange);">&#9203; 07:00</div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div style="border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;background:rgba(255,193,7,0.1);">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,193,7,0.15);color:#F57F17;display:flex;align-items:center;justify-content:center;font-size:18px;">&#127835;</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Makan Siang</div><div style="font-size:12px;color:var(--text-light);">Waktu makan siang</div></div>
+        <div style="font-size:18px;font-weight:700;min-width:72px;text-align:center;color:#F57F17;">&#9203; 12:00</div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div style="border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;background:rgba(52,152,219,0.08);">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(52,152,219,0.15);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px;">&#127769;</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Makan Malam</div><div style="font-size:12px;color:var(--text-light);">Waktu makan malam</div></div>
+        <div style="font-size:18px;font-weight:700;min-width:72px;text-align:center;color:var(--blue);">&#9203; 18:00</div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div id="notifikasiError" class="alert alert-error" style="display:none"></div>
+      <button class="btn btn-primary" onclick="App.navigate('notifikasi-sukses')">&#128190; SIMPAN PENGATURAN</button>
+    </div>
+  </div>
+
+  <!-- ==================== PENGATURAN NOTIFIKASI 1 NONAKTIF (P032) ==================== -->
+  <div class="page" data-page="pengaturan-notifikasi-1nonaktif" id="page-pengaturan-notifikasi-1nonaktif">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('pengaturan-notifikasi')">&#8592;</button>
+      <h1>Pengaturan Notifikasi</h1>
+    </header>
+    <div class="page-content" id="pengaturanNotifikasi1NonaktifContent">
+      <div style="text-align:center;padding:32px 24px 16px;">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--orange-soft);display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 16px;">&#9888;&#65039;</div>
+        <h2 style="font-size:22px;font-weight:700;margin-bottom:8px;">Pengaturan Tersimpan</h2>
+        <p style="font-size:14px;color:var(--text-light);">Pengaturan berhasil, tetapi ada perubahan</p>
+      </div>
+      <div class="section-header"><h2>&#128276; Pengingat Aktif</h2></div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-100);font-size:14px;color:var(--text-muted);">
+          <span>&#10060; Sarapan: pengingat tidak aktif</span><span style="flex:1;"></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-100);font-size:14px;">
+          <span>&#127835; Makan Siang: 12:00</span><span style="flex:1;"></span><span style="font-weight:700;min-width:48px;text-align:right;color:#F57F17;">Aktif</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;font-size:14px;">
+          <span>&#127769; Makan Malam: 18:00</span><span style="flex:1;"></span><span style="font-weight:700;min-width:48px;text-align:right;color:var(--blue);">Aktif</span>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="App.navigate('pengaturan-notifikasi')">OK, MENGERTI</button>
+    </div>
+  </div>
+
+  <!-- ==================== PENGATURAN NOTIFIKASI PARTIAL (P033) ==================== -->
+  <div class="page" data-page="pengaturan-notifikasi-partial" id="page-pengaturan-notifikasi-partial">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('menu-profil')">&#8592;</button>
+      <h1>Pengaturan Notifikasi</h1>
+    </header>
+    <div class="page-content" id="pengaturanNotifikasiPartialContent">
+      <div class="card card-blue">
+        <div class="card-header"><div class="card-icon">&#128276;</div><h3>Pengingat Makan</h3></div>
+        <div class="card-body">Atur pengingat waktu makan agar tidak terlewat</div>
+      </div>
+      <div style="border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;background:var(--gray-100);opacity:0.5;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--gray-300);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-size:18px;">&#127840;</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:var(--text-muted);">Sarapan</div><div style="font-size:12px;color:var(--text-muted);">Waktu makan pagi</div><div style="font-size:11px;color:var(--text-muted);margin-top:1px;">Pengingat tidak aktif</div></div>
+        <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
+      </div>
+      <div style="border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;background:rgba(255,193,7,0.1);">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,193,7,0.15);color:#F57F17;display:flex;align-items:center;justify-content:center;font-size:18px;">&#127835;</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Makan Siang</div><div style="font-size:12px;color:var(--text-light);">Waktu makan siang</div></div>
+        <div style="font-size:18px;font-weight:700;min-width:72px;text-align:center;color:#F57F17;">&#9203; 12:00</div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div style="border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;background:rgba(52,152,219,0.08);">
+        <div style="width:40px;height:40px;border-radius:50%;background:rgba(52,152,219,0.15);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px;">&#127769;</div>
+        <div style="flex:1;"><div style="font-size:14px;font-weight:600;">Makan Malam</div><div style="font-size:12px;color:var(--text-light);">Waktu makan malam</div></div>
+        <div style="font-size:18px;font-weight:700;min-width:72px;text-align:center;color:var(--blue);">&#9203; 18:00</div>
+        <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+      </div>
+      <div id="notifikasiErrorPartial" class="alert alert-error" style="display:none"></div>
+      <button class="btn btn-primary" onclick="App.navigate('notifikasi-sukses')">&#128190; SIMPAN PENGATURAN</button>
+    </div>
+  </div>
+
+  <!-- ==================== NOTIFIKASI SUKSES (P031) ==================== -->
+  <div class="page" data-page="notifikasi-sukses" id="page-notifikasi-sukses">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('pengaturan-notifikasi')">&#8592;</button>
+      <h1>Pengaturan Notifikasi</h1>
+    </header>
+    <div class="page-content" id="notifikasiSuksesContent">
+      <div style="text-align:center;padding:48px 24px;">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--green);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 16px;">&#10003;</div>
+        <h2 style="font-size:22px;font-weight:700;margin-bottom:8px;">Berhasil Disimpan!</h2>
+        <p style="font-size:14px;color:var(--text-light);margin-bottom:24px;">Pengaturan pengingat telah tersimpan</p>
+      </div>
+      <div class="section-header"><h2>&#128197; Jadwal Pengingat Anda</h2></div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-100);font-size:14px;">
+          <span>&#127840; Sarapan: 07:00</span><span style="flex:1;"></span><span style="font-weight:700;min-width:48px;text-align:right;color:var(--orange);">07:00</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-100);font-size:14px;">
+          <span>&#127835; Makan Siang: 12:00</span><span style="flex:1;"></span><span style="font-weight:700;min-width:48px;text-align:right;color:#F57F17;">12:00</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;font-size:14px;">
+          <span>&#127769; Makan Malam: 18:00</span><span style="flex:1;"></span><span style="font-weight:700;min-width:48px;text-align:right;color:var(--blue);">18:00</span>
+        </div>
+      </div>
+      <div class="card card-blue" style="margin-top:16px;">
+        <div class="card-header"><div class="card-icon">&#10003;</div><h3>Notifikasi akan dikirim sesuai hari</h3></div>
+        <div class="card-body">
+          Pastikan notifikasi aktif dalam sistem
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="App.navigate('dashboard')">&#127968; KEMBALI KE DASHBOARD</button>
+    </div>
+  </div>
+
+  <!-- ==================== BOTTOM NAVIGATION ==================== -->
+  <nav class="bottom-nav">
+    <button class="nav-item" id="navBeranda">
+      <span class="nav-icon">&#127968;</span>
+      <span>Beranda</span>
+    </button>
+    <button class="nav-item" id="navRiwayat">
+      <span class="nav-icon">&#128196;</span>
+      <span>Riwayat</span>
+    </button>
+    <button class="nav-item" id="navProfil">
+      <span class="nav-icon">&#128100;</span>
+      <span>Profil</span>
+    </button>
+  </nav>
+
+  <!-- ==================== LOADING OVERLAY ==================== -->
+  <div id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <p style="font-size:14px;color:var(--text-light);">Memproses...</p>
+  </div>
+
+  <!-- ==================== TOAST CONTAINER ==================== -->
+  <div id="toastContainer"></div>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/konsumsi.js"></script>
+  <script src="js/rekomendasi.js"></script>
+  <script src="js/beratBadan.js"></script>
+  <script src="js/analisis.js"></script>
+  <script src="js/notifikasi.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function adjBerat(val) {
+      var input = document.getElementById('beratAngka');
+      var display = document.getElementById('beratDisplay');
+      if (!input || !display) return;
+      var cur = parseFloat(input.value) || 65;
+      cur = Math.round((cur + val) * 10) / 10;
+      cur = Math.max(1, Math.min(500, cur));
+      input.value = cur;
+      display.textContent = cur.toFixed(1);
+    }
+    document.querySelectorAll('#catatBeratForm').forEach(function(form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        App.showToast('Data berat disimpan', 'success');
+        App.navigate('konfirmasi-berat-detail');
+      });
+    });
+    document.querySelectorAll('#aturPreferensiForm').forEach(function(form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        App.showToast('Preferensi berhasil disimpan', 'success');
+        App.navigate('dashboard');
+      });
+    });
+    document.querySelectorAll('.page[data-page="loading-analisis"] .back-btn').forEach(function(btn) {
+      btn.onclick = function() { App.navigate('laporan-analisis'); };
+    });
+    document.querySelectorAll('.page[data-page="error-berat"] .back-btn').forEach(function(btn) {
+      btn.onclick = function() { App.navigate('catat-berat'); };
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+@startuml
+' NutriSurvey - Sequence Diagram
+' Actors & Boundaries (Auth)
+actor User as Pengguna
+boundary "UI Splash Screen\n(P011)" as Splash
+boundary "UI Sign In Sign Up\n(P012)" as SignInUp
+boundary "UI Daftar Akun\n(P013)" as DaftarAkun
+boundary "UI Verifikasi Email\n(P014)" as VerifEmail
+boundary "UI Selamat Datang\n(P015)" as Welcome
+boundary "UI Dashboard\n(P016)" as Dashboard
+
+' Actors & Boundaries (Konsumsi)
+boundary "UI Pilih Waktu Makan\n(P002)" as PilihWaktu
+boundary "UI Pilih Makanan\n(P003)" as PilihMakanan
+boundary "UI Catat Manual\n(P004)" as CatatManual
+boundary "UI Data Tersimpan\n(P006)" as DataTersimpan
+
+' Actors & Boundaries (Rekomendasi)
+boundary "UI Rekomendasi Menu\n(P007)" as RekMenu
+boundary "UI Preferensi Anda\n(P008)" as PrefAnda
+boundary "UI Atur Preferensi\n(P009)" as AturPref
+boundary "UI Menu Rekomendasi\n(P010)" as MenuRek
+
+' Controllers & Entities
+control ControllerAutentikasi as AuthController
+control ControllerDashboard as DashController
+control ControllerKonsumsi as KonsController
+control ControllerRekomendasi as RekController
+
+entity Pengguna as Pengguna
+entity Sesi as Sesi
+entity EmailVerifikasi as EmailVerif
+entity MenuMakan as MenuMakan
+entity BeratBadan as BeratBadan
+entity KonsumsiHarian as KonsumsiHarian
+entity PreferensiPengguna as PrefPengguna
+entity ProfilNutrisi as ProfilNutrisi
+entity RekomendasiMenu as RekMenuEnt
+
+' ============================================================
+' FLOW AUTH: Register & Login
+' ============================================================
+== Alur Auth: Register & Login ==
+
+Pengguna -> Splash: Buka aplikasi
+Pengguna -> Splash: Tombol DAFTAR
+Splash -> DaftarAkun: Navigasi ke tab Sign Up
+
+Pengguna -> DaftarAkun: Isi form (nama, email, password)
+Pengguna -> DaftarAkun: Klik DAFTAR
+DaftarAkun -> AuthController: POST /auth/register
+AuthController -> Pengguna: findByEmail(email)
+Pengguna --> AuthController: null / user
+AuthController -> EmailVerifikasi: crypto.randomBytes(32) → token
+EmailVerifikasi --> AuthController: token_verifikasi
+AuthController -> Pengguna: create({ nama, email, password_hash, token })
+Pengguna --> AuthController: { id, tokenVerifikasi }
+AuthController -> AuthController: jwt.sign({ userId }) → JWT token
+AuthController -> Sesi: JWT tersimpan di localStorage
+AuthController --> DaftarAkun: { success: true, data: { token, user } }
+DaftarAkun --> VerifEmail: Redirect ke verifikasi email
+
+Pengguna -> VerifEmail: Buka link verifikasi dari email
+VerifEmail -> AuthController: GET /auth/verify-email/:token
+AuthController -> EmailVerifikasi: SELECT * FROM pengguna WHERE token_verifikasi = ?
+EmailVerifikasi --> AuthController: { id, nama, email }
+AuthController -> Pengguna: UPDATE email_terverifikasi = 1, token_verifikasi = NULL
+Pengguna --> AuthController: { id, nama, email }
+AuthController --> Welcome: { success: true }
+
+Pengguna -> Welcome: Isi email & password
+Pengguna -> Welcome: Klik MASUK
+Welcome -> AuthController: POST /auth/login
+AuthController -> Pengguna: findByEmail(email)
+Pengguna --> AuthController: user
+AuthController -> AuthController: bcrypt.compare(password, hash)
+AuthController -> Sesi: jwt.sign({ userId }) → session token
+Sesi --> AuthController: JWT (7d expiry)
+AuthController --> Welcome: { success: true, data: { token, user } }
+AuthController -> Sesi: Token disimpan via API.setToken()
+Welcome --> Dashboard: Navigasi ke dashboard
+
+' Controllers
+control ControllerKonsumsi as KonsController
+control ControllerRekomendasi as RekController
+
+' Entities
+entity MenuMakan as MenuMakan
+entity KonsumsiHarian as KonsumsiHarian
+entity PreferensiPengguna as PrefPengguna
+entity ProfilNutrisi as ProfilNutrisi
+entity RekomendasiMenu as RekMenuEnt
+
+' ============================================================
+' FLOW A: Catat Makanan via Pencarian Database
+' ============================================================
+== Alur A: Catat dari Database ==
+
+Pengguna -> PilihWaktu: Pilih waktu makan (Sarapan/Siang/Malam)
+PilihWaktu -> PilihMakanan: LANJUT
+
+Pengguna -> PilihMakanan: Input keyword pencarian
+PilihMakanan -> KonsController: GET /konsumsi/search?keyword=
+KonsController -> MenuMakan: search(keyword)
+MenuMakan --> KonsController: [rows menu_makanan]
+KonsController --> PilihMakanan: { data: [...] }
+
+Pengguna -> PilihMakanan: Pilih item makanan
+
+Pengguna -> PilihMakanan: Atur porsi, SIMPAN
+PilihMakanan -> KonsController: POST /konsumsi/simpan
+KonsController -> KonsumsiHarian: create({ userId, menuId, porsi, ... })
+KonsumsiHarian --> KonsController: insertId
+KonsController --> DataTersimpan: { success: true, data: {...} }
+DataTersimpan --> Pengguna: Tampilkan konfirmasi
+
+Pengguna -> DataTersimpan: TAMBAH LAGI
+DataTersimpan --> PilihWaktu: Kembali ke P002
+
+Pengguna -> DataTersimpan: KE BERANDA
+DataTersimpan --> Dashboard: Navigasi
+
+' ============================================================
+' FLOW B: Catat Manual
+' ============================================================
+== Alur B: Catat Manual ==
+
+Pengguna -> PilihWaktu: Pilih waktu makan
+PilihWaktu -> CatatManual: Pilih "Catat Manual"
+
+Pengguna -> CatatManual: Isi form (nama, kalori, protein, lemak, karbo)
+Pengguna -> CatatManual: Klik SIMPAN
+CatatManual -> KonsController: POST /konsumsi/simpan
+KonsController -> KonsumsiHarian: create({ userId, nama_makanan, kalori, ... })
+KonsumsiHarian --> KonsController: insertId
+KonsController --> DataTersimpan: { success: true, data: {...} }
+DataTersimpan --> Pengguna: Tampilkan konfirmasi
+
+' ============================================================
+' FLOW C: Rekomendasi Menu
+' ============================================================
+== Alur C: Rekomendasi Menu ==
+
+Pengguna -> RekMenu: Buka Rekomendasi Menu
+Pengguna -> RekMenu: BERIKAN REKOMENDASI
+RekMenu -> RekController: GET /rekomendasi
+
+RekController -> PrefPengguna: getByUser(userId)
+PrefPengguna --> RekController: { preferensi_makan, target_kalori, ... }
+
+RekController -> KonsumsiHarian: getByUserAndDate(userId, today)
+KonsumsiHarian --> RekController: todayConsumption
+
+RekController -> MenuMakan: getAll()
+MenuMakan --> RekController: allMenus
+
+RekController -> RekController: Filter & sort by sisa kalori + preferensi
+RekController --> RekMenuEnt: { rekomendasi, sisaKalori }
+RekController --> RekMenu: { data: { rekomendasi, sisaKalori, ... } }
+RekMenu --> Pengguna: Tampilkan rekomendasi + sisa kalori
+
+Pengguna -> PrefAnda: ATUR PREFERENSI
+PrefAnda -> AturPref: Navigasi
+Pengguna -> AturPref: Isi form preferensi
+Pengguna -> AturPref: SIMPAN PREFERENSI
+AturPref -> RekController: POST /rekomendasi/preferensi
+RekController -> PrefPengguna: upsert(userId, data)
+PrefPengguna --> RekController: { id / updated }
+RekController --> AturPref: { success: true }
+AturPref --> Pengguna: Toast "Preferensi berhasil disimpan"
+
+Pengguna -> MenuRek: Lihat rekomendasi lengkap
+MenuRek -> RekController: GET /rekomendasi (di-fetch ulang)
+RekController -> MenuMakan: getAll() + filter
+RekController --> MenuRek: { data: { rekomendasi, ... } }
+MenuRek --> Pengguna: Tampilkan Top 3 + Best Match
+
+Pengguna -> MenuRek: Catat Pilihan
+MenuRek -> KonsController: POST /konsumsi/simpan
+KonsController -> KonsumsiHarian: create(...)
+KonsController --> MenuRek: { success: true }
+
+' ============================================================
+' FLOW D: Dashboard — Load data
+' ============================================================
+== Alur D: Dashboard Data Tercatat (P024) ==
+
+Pengguna -> Dashboard: Navigasi ke dashboard
+Dashboard -> DashController: GET /dashboard
+DashController -> KonsumsiHarian: getByUserAndDate(userId, today)
+KonsumsiHarian --> DashController: todayConsumption
+DashController -> KonsumsiHarian: getByUserAndPeriod(userId, startDate, endDate)
+KonsumsiHarian --> DashController: weeklyConsumption
+DashController -> BeratBadan: getLatest(userId)
+BeratBadan --> DashController: latestWeight
+DashController -> BeratBadan: getByUser(userId)
+BeratBadan --> DashController: allWeights
+DashController -> PreferensiPengguna: getByUser(userId)
+PreferensiPengguna --> DashController: { target_kalori }
+DashController -> DashController: Hitung total kalori, protein, lemak, karbo
+DashController -> DashController: Hitung mingguan, BB trend, rekomendasi
+DashController --> Dashboard: { data: { kalori_terpakai, nutrisi_makro, mingguan, makanan_hari_ini, berat_badan, rekomendasi } }
+Dashboard --> Pengguna: Render card kalori + circular progress
+Dashboard --> Pengguna: Render nutrisi makro bars
+Dashboard --> Pengguna: Render makanan per waktu
+Dashboard --> Pengguna: Render BB + chart
+Dashboard --> Pengguna: Render minggu ini summary
+Dashboard --> Pengguna: Render rekomendasi
+Dashboard --> Pengguna: Render menu utama + bottom nav
+
+@enduml

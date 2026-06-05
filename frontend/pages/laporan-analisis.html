@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan Analisis - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .periode-card { border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all var(--transition); border: 2px solid transparent; text-align:left; display:flex; align-items:center; gap:12px; }
+    .periode-card:hover { box-shadow: var(--shadow); }
+    .periode-card.active { border-color: var(--orange); background: rgba(255,107,53,0.04); }
+    .periode-card .periode-icon { font-size: 32px; flex-shrink:0; }
+    .periode-card .periode-text { flex:1; }
+    .periode-card .periode-title { font-size: 15px; font-weight: 700; }
+    .periode-card .periode-desc { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+    .periode-card .periode-arrow { font-size: 20px; color: var(--text-muted); flex-shrink:0; }
+    .summary-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--gray-100); }
+    .summary-item:last-child { border-bottom: none; }
+    .summary-item .s-label { font-size: 14px; color: var(--text); }
+    .summary-item .s-value { font-size: 14px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="laporan-analisis">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Laporan Analisis</h1>
+    </header>
+    <div class="page-content" id="laporanAnalisisContent">
+      <div class="card card-green">
+        <div class="card-header">
+          <div class="card-icon">&#128202;</div>
+          <h3>Pantau Progress Anda</h3>
+        </div>
+        <div class="card-body">
+          Lihat perkembangan nutrisi dan kesehatan Anda dari waktu ke waktu
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2>&#128197; Pilih Periode Laporan:</h2>
+      </div>
+
+      <div class="card">
+        <div class="periode-card" onclick="Analisis.pilihPeriode('harian')">
+          <div class="periode-icon">&#128197;</div>
+          <div class="periode-text">
+            <div class="periode-title">Harian</div>
+            <div class="periode-desc">Lihat data konsumsi hari ini</div>
+          </div>
+          <div class="periode-arrow">&#8250;</div>
+        </div>
+        <div style="border-top:1px solid var(--gray-100);margin:12px 0;"></div>
+        <div class="periode-card active" style="border-color:var(--orange);" onclick="Analisis.pilihPeriode('mingguan')">
+          <div class="periode-icon">&#128202;</div>
+          <div class="periode-text">
+            <div class="periode-title">Mingguan</div>
+            <div class="periode-desc">Analisis 7 hari terakhir</div>
+          </div>
+          <div class="periode-arrow">&#8250;</div>
+        </div>
+        <div style="border-top:1px solid var(--gray-100);margin:12px 0;"></div>
+        <div class="periode-card" onclick="Analisis.pilihPeriode('bulanan')">
+          <div class="periode-icon">&#128200;</div>
+          <div class="periode-text">
+            <div class="periode-title">Bulanan</div>
+            <div class="periode-desc">Analisis 30 hari terakhir</div>
+          </div>
+          <div class="periode-arrow">&#8250;</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2>&#128200; Ringkasan Cepat (7 Hari):</h2>
+      </div>
+
+      <div class="card card-green">
+        <div class="summary-item">
+          <span class="s-label">&#128293; Kalori rata-rata</span>
+          <span class="s-value" style="color:var(--orange);">1650 kcal/hari</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">&#127919; Target tercapai</span>
+          <span class="s-value" style="color:var(--green);">5/7 hari</span>
+        </div>
+        <div class="summary-item">
+          <span class="s-label">&#128200; Berat Turun</span>
+          <span class="s-value" style="color:var(--blue);">1.2 kg</span>
+        </div>
+        <div class="summary-item" style="border-bottom:none;">
+          <span class="s-label">&#9989;</span>
+          <span class="s-value" style="color:var(--green);font-size:13px;">Progress bagus! Pertahankan!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<div class="page" id="page-dashboard" data-page="dashboard">
+  <div class="page-header">
+    <h1>Dashboard NutriSurvey</h1>
+    <button class="header-action" onclick="navigateTo('notifikasi')">🔔</button>
+  </div>
+
+  <div class="page-content">
+    <div class="card kalori-card">
+      <div class="card-header">
+        <h3>Kalori Harian</h3>
+      </div>
+      <div class="kalori-circle">
+        <svg viewBox="0 0 160 160">
+          <circle class="bg" cx="80" cy="80" r="70" />
+          <circle class="progress" id="kaloriProgress" cx="80" cy="80" r="70" style="stroke-dashoffset:110;" />
+        </svg>
+        <div class="center">
+          <div class="value" id="kaloriPersen">75%</div>
+          <div class="label">Digunakan</div>
+        </div>
+      </div>
+      <div class="kalori-stats">
+        <div class="kalori-stat consumed">
+          <div class="num" id="kaloriDikonsumsi">1.500</div>
+          <div class="lbl">Dikonsumsi</div>
+        </div>
+        <div class="kalori-stat target">
+          <div class="num" id="kaloriTarget">2.000</div>
+          <div class="lbl">Target</div>
+        </div>
+        <div class="kalori-stat remaining">
+          <div class="num" id="kaloriSisa">500</div>
+          <div class="lbl">Sisa</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-blue">
+      <div class="card-header">
+        <h3>Nutrisi Makro</h3>
+      </div>
+      <div class="card-body">
+        <div class="nutrisi-item">
+          <span class="nutrisi-label">Protein</span>
+          <div class="nutrisi-bar-wrap">
+            <div class="nutrisi-bar protein" id="proteinBar" style="width:75%;"></div>
+          </div>
+          <span class="nutrisi-value">45 <small>/ 60g</small></span>
+        </div>
+        <div class="nutrisi-item">
+          <span class="nutrisi-label">Lemak</span>
+          <div class="nutrisi-bar-wrap">
+            <div class="nutrisi-bar lemak" id="lemakBar" style="width:40%;"></div>
+          </div>
+          <span class="nutrisi-value">20 <small>/ 50g</small></span>
+        </div>
+        <div class="nutrisi-item">
+          <span class="nutrisi-label">Karbohidrat</span>
+          <div class="nutrisi-bar-wrap">
+            <div class="nutrisi-bar karbohidrat" id="karbohidratBar" style="width:74%;"></div>
+          </div>
+          <span class="nutrisi-value">48 <small>/ 65g</small></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-orange">
+      <div class="card-header">
+        <h3>🍽️ Makan</h3>
+        <span class="badge badge-orange" id="totalKaloriHari">1.100 kal</span>
+      </div>
+      <div class="card-body">
+        <div class="list-item">
+          <div class="list-icon bg-orange-light">🌅</div>
+          <div class="list-content">
+            <div class="title">Sarapan</div>
+          </div>
+          <div class="list-end">
+            <div class="value orange" id="kaloriSarapan">450</div>
+            <div class="sub">kal</div>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon bg-yellow-light">☀️</div>
+          <div class="list-content">
+            <div class="title">Makan Siang</div>
+          </div>
+          <div class="list-end">
+            <div class="value orange" id="kaloriSiang">650</div>
+            <div class="sub">kal</div>
+          </div>
+        </div>
+        <div class="list-item">
+          <div class="list-icon bg-blue-light">🌙</div>
+          <div class="list-content">
+            <div class="title">Makan Malam</div>
+          </div>
+          <div class="list-end">
+            <div class="value" id="kaloriMalam" style="color:var(--text-muted);">-</div>
+            <div class="sub">kal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-green">
+      <div class="card-header">
+        <h3>⚖️ BB</h3>
+      </div>
+      <div class="card-body">
+        <div class="berat-ringkasan">
+          <div class="item">
+            <div class="num green" id="bbSaatIni">65</div>
+            <div class="lbl">kg</div>
+          </div>
+          <div class="item">
+            <div class="num red" id="bbPerubahan">-1.2</div>
+            <div class="lbl">kg turun</div>
+          </div>
+        </div>
+        <div class="bar-chart" id="bbMiniChart">
+          <div class="bar-item"><div class="bar blue" style="height:70%;"></div><div class="bar-label">Sen</div></div>
+          <div class="bar-item"><div class="bar blue" style="height:68%;"></div><div class="bar-label">Sel</div></div>
+          <div class="bar-item"><div class="bar blue" style="height:65%;"></div><div class="bar-label">Rab</div></div>
+          <div class="bar-item"><div class="bar blue" style="height:63%;"></div><div class="bar-label">Kam</div></div>
+          <div class="bar-item"><div class="bar blue" style="height:66%;"></div><div class="bar-label">Jum</div></div>
+          <div class="bar-item"><div class="bar blue" style="height:64%;"></div><div class="bar-label">Sab</div></div>
+          <div class="bar-item"><div class="bar blue" style="height:65%;"></div><div class="bar-label">Min</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-orange">
+      <div class="card-header">
+        <h3>📅 Minggu Ini</h3>
+      </div>
+      <div class="card-body">
+        <div class="berat-ringkasan">
+          <div class="item">
+            <div class="num orange" id="hariTercatat">3</div>
+            <div class="lbl">/7 hari Tercatat</div>
+          </div>
+          <div class="item">
+            <div class="num green" id="beratTurun">1.5</div>
+            <div class="lbl">kg Turun</div>
+          </div>
+          <div class="item">
+            <div class="num blue" id="hariAktif">7</div>
+            <div class="lbl">hari Aktif</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rekomendasi-card">
+      <div class="rek-icon">🔥</div>
+      <div class="rek-title">Rekomendasi Menu</div>
+      <div class="rek-desc" id="rekomendasiText">Ikan Bakar + Sayur (420 kcal)</div>
+      <button class="rek-btn" onclick="navigateTo('rekomendasi')">Lihat →</button>
+    </div>
+
+    <div class="grid-menu">
+      <div class="grid-menu-item item-makanan" onclick="navigateTo('pilih-waktu')">
+        <div class="icon">🍽️</div>
+        <div class="label">Catat Makanan</div>
+      </div>
+      <div class="grid-menu-item item-berat" onclick="navigateTo('catat-berat')">
+        <div class="icon">⚖️</div>
+        <div class="label">Update Berat</div>
+      </div>
+      <div class="grid-menu-item item-rekomendasi" onclick="navigateTo('preferensi')">
+        <div class="icon">🎯</div>
+        <div class="label">Target Nutrisi</div>
+      </div>
+      <div class="grid-menu-item item-analisis" onclick="navigateTo('analisis')">
+        <div class="icon">📊</div>
+        <div class="label">Laporan Analisis</div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="navigateTo('dashboard')">
+      <span class="nav-icon">🏠</span>
+      <span>Beranda</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('riwayat')">
+      <span class="nav-icon">📋</span>
+      <span>Riwayat</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('profil')">
+      <span class="nav-icon">👤</span>
+      <span>Profil</span>
+    </button>
+  </nav>
+</div>

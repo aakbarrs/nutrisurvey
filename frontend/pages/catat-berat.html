@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catat Berat Badan - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .quick-btn { padding: 8px 16px; border-radius: var(--radius-sm); border: 2px solid var(--gray-200); background: var(--white); font-size: 14px; font-weight: 600; cursor: pointer; transition: all var(--transition); }
+    .quick-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .quick-btn:active { background: var(--gray-100); }
+    .weight-adjust { display: flex; align-items: center; justify-content: center; gap: 16px; margin: 16px 0; }
+    .weight-adjust .adj-btn { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--gray-200); background: var(--white); font-size: 24px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text); transition: all var(--transition); }
+    .weight-adjust .adj-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .weight-adjust .adj-value { font-size: 32px; font-weight: 800; min-width: 80px; text-align: center; }
+    .weight-adjust .adj-unit { font-size: 16px; color: var(--text-light); }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="catat-berat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('pemantauan-berat')">&#8592;</button>
+      <h1>Catat Berat Badan</h1>
+    </header>
+    <div class="page-content" id="catatBeratDetailContent">
+      <div class="card card-blue">
+        <div class="card-header">
+          <div class="card-icon">&#9888;&#65039;</div>
+          <h3>Masukkan Data Anda</h3>
+        </div>
+        <div class="card-body">
+          Catat berat badan Anda saat ini dengan akurat
+        </div>
+      </div>
+
+      <form id="catatBeratForm">
+        <div class="form-group">
+          <label>Tanggal</label>
+          <input class="form-input" id="beratTgl" type="date">
+        </div>
+
+        <div class="form-group">
+          <label>Berat Badan (kg)</label>
+          <div class="weight-adjust">
+            <button type="button" class="adj-btn" onclick="document.getElementById('beratAngka').stepDown(); document.getElementById('beratAngka').dispatchEvent(new Event('input'));">&#8722;</button>
+            <div>
+              <div class="adj-value" id="beratDisplay">65.0</div>
+              <div class="adj-unit">kg</div>
+            </div>
+            <button type="button" class="adj-btn" onclick="document.getElementById('beratAngka').stepUp(); document.getElementById('beratAngka').dispatchEvent(new Event('input'));">&#43;</button>
+          </div>
+          <input class="form-input" id="beratAngka" type="number" step="0.1" min="1" max="500" value="65" placeholder="65.0" style="display:none;">
+          <div style="display:flex;gap:8px;justify-content:center;">
+            <button type="button" class="quick-btn" onclick="adjBerat(-0.5)">-0.5</button>
+            <button type="button" class="quick-btn" onclick="adjBerat(0.5)">+0.5</button>
+            <button type="button" class="quick-btn" onclick="adjBerat(1.0)">+1.0</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Catatan (opsional)</label>
+          <textarea class="form-textarea" id="beratCatatanText" placeholder="Contoh: Setelah olahraga pagi"></textarea>
+        </div>
+
+        <div id="catatBeratError" class="alert alert-error" style="display:none"></div>
+        <button type="submit" class="btn btn-primary" id="catatBeratSubmitBtn">&#128190; SIMPAN</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    function adjBerat(val) {
+      const input = document.getElementById('beratAngka');
+      const display = document.getElementById('beratDisplay');
+      let cur = parseFloat(input.value) || 65;
+      cur = Math.round((cur + val) * 10) / 10;
+      cur = Math.max(1, Math.min(500, cur));
+      input.value = cur;
+      display.textContent = cur.toFixed(1);
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      const tglInput = document.getElementById('beratTgl');
+      if (tglInput) tglInput.value = new Date().toISOString().split('T')[0];
+      const input = document.getElementById('beratAngka');
+      const display = document.getElementById('beratDisplay');
+      if (input && display) {
+        input.addEventListener('input', function() {
+          display.textContent = parseFloat(this.value || 0).toFixed(1);
+        });
+      }
+      const form = document.getElementById('catatBeratForm');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const berat = parseFloat(document.getElementById('beratAngka').value);
+          if (!berat || berat <= 0) {
+            const err = document.getElementById('catatBeratError');
+            err.style.display = 'flex'; err.innerHTML = '<span class="alert-icon">&#9888;&#65039;</span><span>Masukkan berat badan yang valid</span>';
+            return;
+          }
+          App.showToast('Data berat disimpan', 'success');
+          App.navigate('konfirmasi-berat');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

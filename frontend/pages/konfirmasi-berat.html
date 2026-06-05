@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konfirmasi Berat - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="page active" data-page="konfirmasi-berat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('catat-berat')">&#8592;</button>
+      <h1>Pemantauan Berat Badan</h1>
+    </header>
+    <div class="page-content" id="konfirmasiBeratDetailContent">
+      <div class="card card-orange">
+        <div class="card-header">
+          <div class="card-icon">&#128270;</div>
+          <h3>Konfirmasi Data</h3>
+        </div>
+        <div class="card-body">
+          Pastikan data sudah benar!
+        </div>
+      </div>
+
+      <div class="nutrisi-detail">
+        <div class="nutrisi-row">
+          <span class="lbl">Tanggal</span>
+          <span class="val">28 November 2025</span>
+        </div>
+        <div class="nutrisi-row">
+          <span class="lbl">Berat</span>
+          <span class="val" style="font-size:20px;font-weight:800;color:var(--blue);">65 kg</span>
+        </div>
+        <div class="nutrisi-row">
+          <span class="lbl">Catatan</span>
+          <span class="val" style="color:var(--text-light);">-</span>
+        </div>
+      </div>
+
+      <div id="konfirmasiBeratError" class="alert alert-error" style="display:none"></div>
+
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="App.navigate('catat-berat')">Batal</button>
+        <button class="btn btn-success" onclick="App.showToast('Data berat badan berhasil disimpan!', 'success'); App.navigate('sukses-berat')">&#128190; Simpan</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

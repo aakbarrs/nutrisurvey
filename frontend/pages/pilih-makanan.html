@@ -1,0 +1,64 @@
+<div class="page" id="page-pilih-makanan" data-page="pilih-makanan">
+  <div class="page-header">
+    <button class="back-btn" onclick="navigateTo('pilih-waktu')">←</button>
+    <h1>Pilih Makanan Anda</h1>
+  </div>
+
+  <div class="page-content">
+    <div class="search-bar">
+      <input type="text" class="search-input" id="cariMakananInput" placeholder="Cari Makanan" oninput="cariMakanan(this.value)" />
+      <button class="search-btn" onclick="cariMakanan(document.getElementById('cariMakananInput').value)">🔍</button>
+    </div>
+
+    <div id="makananList">
+      <div class="makanan-item" onclick="pilihMakanan('Nasi Putih', 204, '🍚')">
+        <div class="makanan-icon">🍚</div>
+        <div class="makanan-info">
+          <div class="name">Nasi Putih</div>
+          <div class="cal">204 kal / porsi</div>
+        </div>
+        <div class="makanan-arrow">›</div>
+      </div>
+
+      <div class="makanan-item" onclick="pilihMakanan('Ayam Goreng', 300, '🍗')">
+        <div class="makanan-icon">🍗</div>
+        <div class="makanan-info">
+          <div class="name">Ayam Goreng</div>
+          <div class="cal">300 kal / porsi</div>
+        </div>
+        <div class="makanan-arrow">›</div>
+      </div>
+
+      <div class="makanan-item" onclick="pilihMakanan('Telur Dadar', 185, '🥚')">
+        <div class="makanan-icon">🥚</div>
+        <div class="makanan-info">
+          <div class="name">Telur Dadar</div>
+          <div class="cal">185 kal / porsi</div>
+        </div>
+        <div class="makanan-arrow">›</div>
+      </div>
+
+      <div class="makanan-item" onclick="pilihMakanan('Tempe Goreng', 120, '🫘')">
+        <div class="makanan-icon">🫘</div>
+        <div class="makanan-info">
+          <div class="name">Tempe Goreng</div>
+          <div class="cal">120 kal / porsi</div>
+        </div>
+        <div class="makanan-arrow">›</div>
+      </div>
+
+      <div class="makanan-item" onclick="pilihMakanan('Sayur Bayam', 80, '🥬')">
+        <div class="makanan-icon">🥬</div>
+        <div class="makanan-info">
+          <div class="name">Sayur Bayam</div>
+          <div class="cal">80 kal / porsi</div>
+        </div>
+        <div class="makanan-arrow">›</div>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" style="margin-top:16px;" onclick="navigateTo('catat-manual')">
+      + Catat Manual
+    </button>
+  </div>
+</div>

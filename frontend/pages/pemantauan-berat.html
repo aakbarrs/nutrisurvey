@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pemantauan Berat Badan - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .weight-display { text-align: center; padding: 20px; }
+    .weight-display .weight-num { font-size: 48px; font-weight: 800; color: var(--blue); }
+    .weight-display .weight-unit { font-size: 18px; color: var(--text-light); }
+    .weight-display .weight-date { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .chart-placeholder { width: 100%; height: 160px; background: linear-gradient(180deg, rgba(255,107,53,0.08) 0%, rgba(255,107,53,0.02) 100%); border-radius: var(--radius-sm); display: flex; align-items: flex-end; padding: 12px 8px; gap: 6px; }
+    .chart-placeholder .bar { flex: 1; border-radius: 3px 3px 0 0; background: var(--orange); min-height: 8px; opacity: 0.6; }
+    .chart-placeholder .bar:nth-child(1) { height: 60%; }
+    .chart-placeholder .bar:nth-child(2) { height: 75%; }
+    .chart-placeholder .bar:nth-child(3) { height: 55%; }
+    .chart-placeholder .bar:nth-child(4) { height: 80%; }
+    .chart-placeholder .bar:nth-child(5) { height: 70%; }
+    .chart-placeholder .bar:nth-child(6) { height: 85%; }
+    .chart-placeholder .bar:nth-child(7) { height: 65%; }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="pemantauan-berat">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('dashboard')">&#8592;</button>
+      <h1>Pemantauan Berat Badan</h1>
+    </header>
+    <div class="page-content" id="pemantauanBeratContent">
+      <div class="card card-blue weight-display">
+        <div style="font-size:14px;color:var(--text-light);margin-bottom:4px;">Berat Badan Saat Ini:</div>
+        <div class="weight-num">65</div>
+        <div class="weight-unit">kg</div>
+        <div class="weight-date">Terakhir update: 28 Nov 2025</div>
+      </div>
+
+      <div class="section-header">
+        <h2>&#128200; Grafik Perkembangan</h2>
+      </div>
+      <div class="card">
+        <div class="chart-placeholder">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="card card-green">
+        <div class="card-header">
+          <h3>&#128200; Progress Bulan Ini</h3>
+        </div>
+        <div class="berat-ringkasan">
+          <div class="item">
+            <div class="num green">+3</div>
+            <div class="lbl">Naik (kg)</div>
+          </div>
+          <div class="item">
+            <div class="num blue">65</div>
+            <div class="lbl">Saat ini (kg)</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--text-light);margin-top:4px;">Anda bulan ini: +3 kg, Lanjutkan: 65 kg</div>
+      </div>
+
+      <button class="btn btn-primary" onclick="App.navigate('catat-berat')">&#10133; TAMBAH DATA</button>
+    </div>
+  </div>
+</body>
+</html>

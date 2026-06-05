@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atur Preferensi - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="page active" data-page="atur-preferensi">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('preferensi-anda')">&#8592;</button>
+      <h1>Atur Preferensi</h1>
+    </header>
+    <div class="page-content" id="aturPreferensiContent">
+      <form id="aturPreferensiForm">
+        <div class="form-group">
+          <label>Alergi Makanan:</label>
+          <input class="form-input" id="prefAlergiInput" type="text" placeholder="Contoh: Susu, Telur, Kacang, Ikan...">
+        </div>
+
+        <div class="form-group">
+          <label>Preferensi Diet:</label>
+          <div class="radio-group">
+            <label class="radio-item">
+              <input type="radio" name="prefDietRadio" value="vegetarian">
+              <span class="radio-indicator"></span>
+              <span class="radio-label">Vegetarian</span>
+            </label>
+            <label class="radio-item">
+              <input type="radio" name="prefDietRadio" value="halal">
+              <span class="radio-indicator"></span>
+              <span class="radio-label">Halal</span>
+            </label>
+          </div>
+          <div class="check-group" style="margin-top:8px;">
+            <label class="check-item">
+              <input type="checkbox">
+              <span class="check-indicator"></span>
+              <span class="check-label">Preferensi Diet (vegetarian, bebas gula, dll)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Makanan yang Tidak Disukai:</label>
+          <input class="form-input" id="prefTidakDisukai" type="text" placeholder="Contoh: Seafood, Daging...">
+        </div>
+
+        <div class="form-group">
+          <label>Target Khusus</label>
+          <input class="form-input" id="prefTargetKhusus" type="text" placeholder="Contoh: Tinggi protein, Rendah lemak">
+        </div>
+
+        <div id="aturPrefError" class="alert alert-error" style="display:none"></div>
+        <button type="submit" class="btn btn-primary" id="aturPrefBtn">SIMPAN PREFERENSI</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    document.getElementById('aturPreferensiForm')?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      App.showToast('Preferensi berhasil disimpan', 'success');
+      App.navigate('dashboard');
+    });
+  </script>
+</body>
+</html>

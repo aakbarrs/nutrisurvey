@@ -1,0 +1,47 @@
+<div class="page" id="page-dashboard-empty" data-page="dashboard-empty">
+  <div class="page-header">
+    <h1>Dashboard NutriSurvey</h1>
+    <button class="header-action" onclick="navigateTo('notifikasi')">🔔</button>
+  </div>
+
+  <div class="page-content">
+    <div class="card" style="text-align:center;padding:40px 20px;">
+      <div class="empty-state" style="padding:0;">
+        <div class="empty-icon">📊</div>
+        <h3>Belum Ada Data Konsumsi</h3>
+        <p>Mulai catat makanan Anda untuk melihat ringkasan nutrisi harian di sini</p>
+        <button class="btn btn-primary" onclick="navigateTo('pilih-waktu')">
+          + Catat Makanan Pertama
+        </button>
+      </div>
+    </div>
+
+    <div class="card card-green" style="margin-top:16px;">
+      <div class="card-header">
+        <h3>💡 Tips Memulai:</h3>
+      </div>
+      <div class="card-body">
+        <ol style="padding-left:20px;">
+          <li style="margin-bottom:8px;">Catat setiap makanan yang dikonsumsi</li>
+          <li style="margin-bottom:8px;">Update berat badan secara rutin</li>
+          <li style="margin-bottom:8px;">Lihat rekomendasi menu sehat</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="navigateTo('dashboard-empty')">
+      <span class="nav-icon">🏠</span>
+      <span>Beranda</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('riwayat')">
+      <span class="nav-icon">📋</span>
+      <span>Riwayat</span>
+    </button>
+    <button class="nav-item" onclick="navigateTo('profil')">
+      <span class="nav-icon">👤</span>
+      <span>Profil</span>
+    </button>
+  </nav>
+</div>

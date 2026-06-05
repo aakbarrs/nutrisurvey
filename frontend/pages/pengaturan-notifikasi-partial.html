@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengaturan Notifikasi - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .notif-card { border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+    .notif-card .notif-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .notif-card .notif-info { flex: 1; }
+    .notif-card .notif-info .notif-title { font-size: 14px; font-weight: 600; }
+    .notif-card .notif-info .notif-desc { font-size: 12px; color: var(--text-light); margin-top: 1px; }
+    .notif-card .notif-time { font-size: 18px; font-weight: 700; min-width: 72px; text-align: center; }
+    .notif-card .notif-status { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .notif-card.disabled { opacity: 0.5; }
+    .bg-yellow-soft { background: rgba(255,193,7,0.1); }
+    .bg-blue-soft { background: rgba(52,152,219,0.08); }
+    .bg-gray-soft { background: var(--gray-100); }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="pengaturan-notifikasi-partial">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('menu-profil')">&#8592;</button>
+      <h1>Pengaturan Notifikasi</h1>
+    </header>
+    <div class="page-content" id="pengaturanNotifikasiPartialContent">
+      <div class="card card-blue">
+        <div class="card-header">
+          <div class="card-icon">&#128276;</div>
+          <h3>Pengingat Makan</h3>
+        </div>
+        <div class="card-body">
+          Atur pengingat waktu makan agar tidak terlewat
+        </div>
+      </div>
+
+      <div class="notif-card bg-gray-soft disabled">
+        <div class="notif-icon" style="background:var(--gray-300);color:var(--text-muted);">&#127840;</div>
+        <div class="notif-info">
+          <div class="notif-title" style="color:var(--text-muted);">Sarapan</div>
+          <div class="notif-desc">Waktu makan pagi</div>
+          <div class="notif-status">Pengingat tidak aktif</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="notif-card bg-yellow-soft">
+        <div class="notif-icon" style="background:rgba(255,193,7,0.15);color:#F57F17;">&#127835;</div>
+        <div class="notif-info">
+          <div class="notif-title">Makan Siang</div>
+          <div class="notif-desc">Waktu makan siang</div>
+        </div>
+        <div class="notif-time" style="color:#F57F17;">&#9203; 12:00</div>
+        <label class="toggle">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="notif-card bg-blue-soft">
+        <div class="notif-icon" style="background:rgba(52,152,219,0.15);color:var(--blue);">&#127769;</div>
+        <div class="notif-info">
+          <div class="notif-title">Makan Malam</div>
+          <div class="notif-desc">Waktu makan malam</div>
+        </div>
+        <div class="notif-time" style="color:var(--blue);">&#9203; 18:00</div>
+        <label class="toggle">
+          <input type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div id="notifikasiError" class="alert alert-error" style="display:none"></div>
+      <button class="btn btn-primary" onclick="App.navigate('notifikasi-sukses')">&#128190; SIMPAN PENGATURAN</button>
+    </div>
+  </div>
+</body>
+</html>

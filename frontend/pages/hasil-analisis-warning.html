@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Belum Cukup - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .tip-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text); }
+    .tip-item .tip-bullet { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); flex-shrink: 0; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="hasil-analisis-warning">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('laporan-analisis')">&#8592;</button>
+      <h1>Analisis Mingguan</h1>
+    </header>
+    <div class="page-content" id="hasilAnalisisWarningContent">
+      <div class="card card-orange">
+        <div class="card-header">
+          <div class="card-icon">&#9888;&#65039;</div>
+          <h3 id="warningHeading">Data Belum Cukup</h3>
+        </div>
+        <div class="card-body">
+          <p id="warningDesc" style="margin-bottom:8px;">Anda telah menggunakan aplikasi kurang dari 7 hari</p>
+          <p style="font-size:13px;">Silahkan catat konsumsi Anda setiap hari untuk mendapatkan analisis lengkap</p>
+        </div>
+      </div>
+
+      <div class="card card-blue">
+        <div class="card-header">
+          <div class="card-icon">&#128161;</div>
+          <h3>Apa yang bisa dilakukan?</h3>
+        </div>
+        <div class="tip-item">
+          <div class="tip-bullet"></div>
+          <span>Lihat laporan harian untuk data hari ini</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-bullet"></div>
+          <span>Lanjutkan catat makanan setiap hari</span>
+        </div>
+        <div class="tip-item">
+          <div class="tip-bullet"></div>
+          <span>Kembali dalam beberapa hari untuk melihat analisis mingguan lengkap</span>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2>&#128200; Data Tersedia (3 Hari):</h2>
+      </div>
+
+      <div class="card">
+        <div class="summary-item">
+          <span class="s-label">&#128293; Saat ini</span>
+          <span class="s-value" style="color:var(--orange);">1580 kcal/hari</span>
+        </div>
+        <div class="summary-item" style="border-bottom:none;">
+          <span class="s-label">&#127919; Target Tercapai</span>
+          <span class="s-value" style="color:var(--green);">2/3 hari</span>
+        </div>
+      </div>
+
+      <button class="btn btn-outline" onclick="App.navigate('laporan-analisis')">&#128196; Laporan Harian</button>
+      <div style="height:10px;"></div>
+      <button class="btn btn-primary" onclick="App.navigate('catat-makanan')">&#127858; Catat Makanan</button>
+    </div>
+  </div>
+
+</body>
+</html>

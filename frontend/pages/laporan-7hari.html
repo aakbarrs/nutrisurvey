@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan - NutriSurvey</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .stat-card { text-align:center;padding:16px;border-radius:var(--radius); }
+    .stat-card .stat-num { font-size: 28px; font-weight: 800; }
+    .stat-card .stat-label { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+    .bar-item { display:flex;align-items:center;gap:10px;margin-bottom:10px; }
+    .bar-item .bar-label { width: 80px; font-size: 13px; font-weight: 600; }
+    .bar-item .bar-track { flex:1;height:10px;background:var(--gray-200);border-radius:5px;overflow:hidden; }
+    .bar-item .bar-fill { height:100%;border-radius:5px; }
+    .bar-item .bar-fill.protein { background: linear-gradient(90deg, #3498DB, #2980B9); }
+    .bar-item .bar-fill.lemak { background: linear-gradient(90deg, #F1C40F, #F39C12); }
+    .bar-item .bar-fill.karbo { background: linear-gradient(90deg, #FF6B35, #FF4D00); }
+    .bar-item .bar-value { width: 60px;text-align:right;font-size:13px;font-weight:700; }
+  </style>
+</head>
+<body>
+  <div class="page active" data-page="laporan-7hari">
+    <header class="page-header">
+      <button class="back-btn" onclick="App.navigate('laporan-analisis')">&#8592;</button>
+      <h1>Laporan</h1>
+    </header>
+    <div class="page-content" id="laporan7HariContent">
+      <div class="card card-blue" style="text-align:center;padding:12px;">
+        <span class="badge badge-blue" style="font-size:13px;">&#128197; 22 Nov - 28 Nov 2025 (7 hari)</span>
+      </div>
+
+      <div class="card card-green" style="display:flex;align-items:center;gap:16px;padding-top:12px;padding-bottom:12px;">
+        <div style="flex:1;text-align:left;">
+          <div style="font-size:13px;color:var(--text-light);">Rata-Rata Kalori</div>
+          <div style="font-size:28px;font-weight:800;color:var(--green);">1650</div>
+          <div style="font-size:12px;color:var(--text-light);">kcal/hari</div>
+        </div>
+        <div style="text-align:right;">
+          <span class="badge badge-green" style="font-size:13px;">85% dari target</span>
+        </div>
+      </div>
+
+      <div class="card card-blue">
+        <div class="card-header"><h3>Perubahan BB</h3></div>
+        <div style="text-align:center;padding:8px;">
+          <span style="font-size:36px;font-weight:800;color:var(--blue);">-1.2</span>
+          <span style="font-size:16px;color:var(--text-light);"> kg</span>
+          <div style="font-size:13px;color:var(--text-light);margin-top:4px;">Berat turun 1.2 kg</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2>&#128202; Grafik Asupan Kalori</h2>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:flex-end;gap:6px;height:160px;padding:8px 0;">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1450</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:65%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Sen</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1800</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:80%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Sel</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1200</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:55%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Rab</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1950</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:90%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Kam</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1700</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:75%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Jum</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--text-light);">1880</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--gray-300);height:85%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Sab</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;">
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px;color:var(--orange);">1550</div>
+            <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:var(--orange);height:70%;min-height:4px;"></div>
+            <div style="font-size:10px;color:var(--text-light);margin-top:6px;">Min</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2>&#128200; Perbandingan Asupan Nutrisi</h2>
+      </div>
+      <div class="card">
+        <div class="bar-item">
+          <div class="bar-label">Protein</div>
+          <div class="bar-track"><div class="bar-fill protein" style="width:55%"></div></div>
+          <div class="bar-value">56g</div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin:-6px 0 10px 90px;">rata-rata</div>
+        <div class="bar-item">
+          <div class="bar-label">Lemak</div>
+          <div class="bar-track"><div class="bar-fill lemak" style="width:45%"></div></div>
+          <div class="bar-value">42g</div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin:-6px 0 10px 90px;">rata-rata</div>
+        <div class="bar-item">
+          <div class="bar-label">Karbohidrat</div>
+          <div class="bar-track"><div class="bar-fill karbo" style="width:70%"></div></div>
+          <div class="bar-value">185g</div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin:-6px 0 0 90px;">rata-rata</div>
+      </div>
+
+      <button class="btn btn-outline" onclick="App.showToast('Menyiapkan PDF...', 'success')">&#128196; Export PDF</button>
+      <div style="height:10px;"></div>
+      <button class="btn btn-primary" onclick="App.navigate('laporan-analisis')">&#128269; Lihat Detail</button>
+    </div>
+  </div>
+</body>
+</html>
