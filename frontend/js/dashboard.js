@@ -11,6 +11,7 @@ const Dashboard = {
       content.innerHTML = '';
       this.renderKaloriCard(data, content);
       this.renderNutrisiMakro(data.nutrisi_makro || {}, content);
+      this.renderFeatureCards(content);
       this.renderMakananList(data.makanan_hari_ini || [], content);
       if (data.berat_badan) {
         this.renderBeratBadan(data.berat_badan, content);
@@ -36,7 +37,7 @@ const Dashboard = {
     const section = document.createElement('div');
     section.className = 'slide-down';
     section.innerHTML = `
-      <div class="section-header"><h2>&#128200; Ringkasan Hari Ini</h2></div>
+      <div class="section-header"><h2>&#128200; Ringkasan Nutrisi Hari Ini</h2></div>
       <div class="card kalori-card">
         <div class="card-header"><div class="card-icon">&#128293;</div><h3>Kalori</h3></div>
         <div class="kalori-circle">
@@ -62,6 +63,34 @@ const Dashboard = {
             <div class="num">${remaining}</div>
             <div class="lbl">Sisa</div>
           </div>
+        </div>
+      </div>
+    `;
+    content.appendChild(section);
+  },
+
+  renderFeatureCards(content) {
+    const section = document.createElement('div');
+    section.className = 'slide-down';
+    section.innerHTML = `
+      <div class="section-header"><h2>&#128200; Laporan &amp; Analisis</h2></div>
+      <div class="card card-blue">
+        <div class="card-header"><div class="card-icon">&#128202;</div><h3>Laporan &amp; Analisis</h3></div>
+        <div class="card-body">
+          Lihat perkembangan konsumsi nutrisi dan pola makan Anda berdasarkan data yang telah dicatat.
+        </div>
+        <div style="padding:0 16px 16px;">
+          <button class="btn btn-primary" onclick="App.navigate('analisis')">&#128269; Lihat Laporan</button>
+        </div>
+      </div>
+      <div class="section-header"><h2>&#129381; Preferensi Makanan</h2></div>
+      <div class="card card-green">
+        <div class="card-header"><div class="card-icon">&#129381;</div><h3>Preferensi Makanan</h3></div>
+        <div class="card-body">
+          Atur preferensi dan tujuan nutrisi untuk mendapatkan rekomendasi menu yang lebih personal.
+        </div>
+        <div style="padding:0 16px 16px;">
+          <button class="btn btn-primary" onclick="App.navigate('atur-preferensi')">&#9881;&#65039; Atur Preferensi</button>
         </div>
       </div>
     `;
@@ -283,6 +312,10 @@ const Dashboard = {
         <div class="card" style="text-align:center;padding:20px;cursor:pointer;" onclick="App.navigate('analisis')">
           <div style="font-size:32px;margin-bottom:8px;">&#128202;</div>
           <div style="font-size:14px;font-weight:600;">Laporan Analisis</div>
+        </div>
+        <div class="card" style="text-align:center;padding:20px;cursor:pointer;" onclick="App.navigate('rekomendasi-menu')">
+          <div style="font-size:32px;margin-bottom:8px;">&#127858;</div>
+          <div style="font-size:14px;font-weight:600;">Referensi Makanan</div>
         </div>
       </div>
       <div class="section-header"><h2>Menu Navigasi Bawah</h2></div>
